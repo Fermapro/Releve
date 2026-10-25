@@ -77,6 +77,12 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .txt,.sel{width:100%;min-height:48px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface)}
 textarea.txt{min-height:84px;resize:vertical}
 .chips+.txt{margin-top:8px}
+.pbg{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:8px}
+.pbi{display:flex;flex-direction:column;align-items:center;gap:6px;padding:9px 4px 7px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);-webkit-tap-highlight-color:transparent}
+.pbi svg{width:40px;height:56px;display:block}
+.pbi span{font-size:12px;font-weight:700;line-height:1.15;text-align:center;color:var(--muted)}
+.pbi.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.pbi.on span{color:var(--accent-ink)}
 .mm{display:flex;align-items:stretch;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden;max-width:260px}
 .mm input{flex:1;min-width:0;border:0;background:none;padding:10px 12px;font:600 22px var(--mono);font-variant-numeric:tabular-nums;letter-spacing:.02em}
 .mm input:focus{outline:none}
@@ -112,6 +118,8 @@ textarea.txt{min-height:84px;resize:vertical}
 .sk{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
 .sk .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px max(12px,env(safe-area-inset-left,0px)) 8px max(12px,env(safe-area-inset-right,0px));background:var(--surface);border-bottom:1px solid var(--line)}
 .sk .wrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:8px}
+.skflag{font-size:13px;font-weight:700;color:var(--accent-ink);background:var(--accent-soft);border-radius:99px;padding:5px 12px;opacity:0;transition:opacity .12s}
+.skflag.on{opacity:1}
 .sk canvas{background:#fff;max-width:100%;max-height:100%;touch-action:none;border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow)}
 .sw{width:40px;height:40px;border-radius:50%;border:3px solid var(--surface);outline:2px solid var(--line)}
 .sw.on{outline-color:var(--accent)}
@@ -181,7 +189,7 @@ const PTS3={t:'Relevé en 3 points',f:[
   {k:'dg1',l:'Diagonale haut gauche à bas droite',t:'mm',if:d=>d.pts3},{k:'dg2',l:'Diagonale haut droite à bas gauche',t:'mm',if:d=>d.pts3},
   {t:'eq',if:d=>d.pts3}]};
 const POSE={t:'Pose',f:[
-  {k:'pose',l:'Type de pose',o:['Rénovation sur dormant existant','Dépose totale','En applique','En tunnel','Neuf']},
+  {k:'pose',l:'Type de pose',o:['Rénovation sur dormant existant','Dépose totale','En applique','En feuillure','En tunnel','Neuf']},
   {k:'contraintes',l:'Contraintes particulières',t:'text'}]};
 const ACCES={t:'Contraintes',f:[
   {k:'contraintes',l:'Contraintes particulières',t:'text'}]};
@@ -216,6 +224,32 @@ const store=(label,prefix,ext)=>{const man=ext?['Manivelle','Sangle','Filaire','
     {k:'distTab',l:'Distance au tableau électrique',t:'mm',if:mot}]},
   {t:'Options',f:[{k:'lambrequin',l:'Lambrequin',t:'check'},...(ext?[{k:'capteur',l:'Capteur de vent ou de soleil',t:'check'}]:[]),{k:'domotique',l:'Domotique',t:'check'}]},
   {t:'Points de contrôle',f:[{k:'obstacles',l:'Obstacles (poignée, volet, gouttière)',t:'line'},...(ext?[YN('vent','Exposition au vent importante')]:[]),YN('fixOk','Fixation possible sur le support')]},ACCES]}};
+/* ---------- Petits bois : dispositions (reprises du logiciel de devis) ---------- */
+const pbH=ys=>ys.map(y=>[0,y,1,y]), pbV=xs=>xs.map(x=>[x,0,x,1]);
+const pbNH=n=>pbH([...Array(n)].map((_,i)=>(i+1)/(n+1)));
+const pbNV=n=>pbV([...Array(n)].map((_,i)=>(i+1)/(n+1)));
+const pbGrid=(c,r)=>[...[...Array(c-1)].map((_,i)=>[(i+1)/c,0,(i+1)/c,1]),...[...Array(r-1)].map((_,i)=>[0,(i+1)/r,1,(i+1)/r])];
+const pbBand=(n,bas)=>{const l=[[0,.25,1,.25]];for(let i=1;i<n;i++)l.push([i/n,0,i/n,.25]);
+  if(bas){l.push([0,.75,1,.75]);for(let i=1;i<n;i++)l.push([i/n,.75,i/n,1])}return l};
+const PB=[
+ {l:'1 petit-bois horizontal haut par vitrage (1/4 hauteur)',s:'1 horiz. haut ¼',n:pbH([.25])},
+ {l:'1 petit-bois horizontal bas par vitrage (1/4 hauteur)',s:'1 horiz. bas ¼',n:pbH([.75])},
+ {l:'1 petit-bois horizontal par vitrage',s:'1 horiz.',n:pbNH(1)},
+ {l:'2 petits-bois horizontaux par vitrage (1/4 haut et bas)',s:'2 horiz. ¼',n:pbH([.25,.75])},
+ {l:'2 petits-bois horizontaux par vitrage',s:'2 horiz.',n:pbNH(2)},
+ {l:'3 petits-bois horizontaux par vitrage',s:'3 horiz.',n:pbNH(3)},
+ {l:'4 petits-bois horizontaux par vitrage',s:'4 horiz.',n:pbNH(4)},
+ {l:'5 petits-bois horizontaux par vitrage',s:'5 horiz.',n:pbNH(5)},
+ {l:'1 petit-bois vertical par vitrage',s:'1 vert.',n:pbNV(1)},
+ {l:'2 petits-bois verticaux par vitrage',s:'2 vert.',n:pbNV(2)},
+ {l:'3 petits-bois verticaux par vitrage',s:'3 vert.',n:pbNV(3)},
+ {l:'4 petits-bois verticaux par vitrage',s:'4 vert.',n:pbNV(4)},
+ {l:'Double carreau haut par vitrage (1/4 hauteur)',s:'Haut ×2',n:pbBand(2)},
+ {l:'Triple carreau haut par vitrage (1/4 hauteur)',s:'Haut ×3',n:pbBand(3)},
+ {l:'Double carreau haut et bas par vitrage (1/4 haut et bas)',s:'Haut/bas ×2',n:pbBand(2,1)},
+ {l:'Triple carreau haut et bas par vitrage (1/4 haut et bas)',s:'Haut/bas ×3',n:pbBand(3,1)},
+ ...[2,3,4,5,6].flatMap(c=>[2,3,4].map(r=>({l:`${c} × ${r} carreaux par vitrage`,s:`${c} × ${r}`,n:pbGrid(c,r)})))];
+const pbSVG=o=>`<svg viewBox="0 0 40 56" aria-hidden="true"><rect x="2.2" y="2.2" width="35.6" height="51.6" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.4"/>${o.n.map(([a,b,c,d])=>`<line x1="${(2.2+a*35.6).toFixed(1)}" y1="${(2.2+b*51.6).toFixed(1)}" x2="${(2.2+c*35.6).toFixed(1)}" y2="${(2.2+d*51.6).toFixed(1)}" stroke="currentColor" stroke-width="1.7"/>`).join('')}</svg>`;
 const T={
  fenetre:{label:'Fenêtre',prefix:'F',s:[
   {t:'Cotes',f:[MODE_FEN,HH(),LL(),
@@ -228,6 +262,7 @@ const T={
     {k:'sens',l:"Sens d'ouverture (vu de l'intérieur)",o:['Droite','Gauche'],if:d=>!noSens(d)},
     {k:'petitbois',l:'Petits bois',t:'check'},
     {k:'pbType',l:'Type de petits bois (plusieurs choix possibles)',t:'multi',o:['Intravitrage','Collé avec intercalaire fictif','Couleur menuiserie','Laiton','Plomb'],if:d=>d.petitbois},
+    {k:'pbDisp',l:'Disposition des petits bois',t:'pb',if:d=>d.petitbois},
     {k:'pbCroquis',t:'info',if:d=>d.petitbois},
     {k:'traverse',l:'Traverse',t:'check'},
     {k:'meneau',l:'Meneau',t:'check'},
@@ -258,13 +293,19 @@ const T={
     {k:'assocPS',l:'Ajouter une persienne associée',t:'act',act:'addassoc',kind:'pers'},
     {k:'assocSI',l:'Ajouter un store intérieur associé',t:'act',act:'addassoc',kind:'storeInt'},
     {k:'assocSE',l:'Ajouter un store extérieur associé',t:'act',act:'addassoc',kind:'storeExt'}]},
-  poseWith(YN('poseAppui',"Pose de l'appui"),Object.assign(YN('poseSeuil','Pose du seuil'),{if:d=>hasT(d,'Porte-fenêtre')})),
-  {t:'Points de contrôle',f:[YN('gardecorps','Fenêtre en étage : garde-corps nécessaire'),
-    YN('appui','Appui existant à remplacer'),YN('habInt','Habillage intérieur à prévoir'),
+  poseWith(
+    YN('deposeAppui',"Dépose de l'appui"),
+    YN('appui','Appui existant à remplacer'),
+    Object.assign(YN('poseSeuil','Pose du seuil'),{if:d=>hasT(d,'Porte-fenêtre')}),
+    YN('delignage','Délignage des cochonnets'),
+    YN('comacelle','Komacel'),
+    YN('habInt','Habillage intérieur à prévoir'),
     {k:'habIntPlat',l:'Habillage intérieur : plat (plusieurs choix possibles)',t:'multi',o:['Plat de 30','Plat de 50','Plat de 100'],if:d=>d.habInt==='Oui'},
     YN('habExt','Habillage extérieur à prévoir'),
-    {k:'habExtCorn',l:'Habillage extérieur : cornière',o:['Cornière 60 × 40','Cornière 100 × 100'],if:d=>d.habExt==='Oui'},
-    {k:'habExtPlat',l:'Habillage extérieur : plat (plusieurs choix possibles)',t:'multi',o:['Plat de 30','Plat de 50','Plat de 100'],if:d=>d.habExt==='Oui'}]}]},
+    {k:'habExtCorn',l:'Habillage extérieur : cornière',o:['Cornière 60 × 40','Cornière 100 × 100','Cornière alu anodisé pour habillage de seuil'],if:d=>d.habExt==='Oui'},
+    {k:'habExtPlat',l:'Habillage extérieur : plat (plusieurs choix possibles)',t:'multi',o:['Plat de 30','Plat de 50','Plat de 100'],if:d=>d.habExt==='Oui'}),
+  {t:'Points de contrôle',f:[YN('gardecorps','Fenêtre en étage : garde-corps nécessaire'),
+    YN('sansVoletRDC','Absence de volet au rez-de-chaussée')]}]},
  vr:{label:'Volet roulant',prefix:'VR',s:[
   {t:'Cotes',f:[HH('Hauteur fabrication'),LL('Largeur fabrication'),{k:'lie',l:'Associé à (repère de la fenêtre)',t:'line',if:d=>d.lie},{k:'ctab',l:'Noter aussi les cotes de tableau (contrôle)',t:'check'}]},
   {t:'Cotes de tableau (contrôle)',f:[{k:'tabH',l:'Hauteur de tableau relevée',t:'mm',pl:[300,4500],if:d=>d.ctab},{k:'tabL',l:'Largeur de tableau relevée',t:'mm',pl:[300,4500],if:d=>d.ctab}]},
@@ -383,6 +424,7 @@ function fieldHTML(f,d,showMiss){
     return `<div class="fld"><button type="button" class="btn" data-act="colall">Même couleur partout</button> ${same?'<span class="tag ok">Identique partout</span>':''}<p class="muted" style="margin:6px 0 0;font-size:14px">Reprend la couleur du tablier pour les autres éléments affichés.</p></div>`}
   if(f.t==='info'){const h=curHolder(),has=h&&Object.values(h.mk||{}).includes('sketch');
     return `<div class="fld"><span class="l">Croquis des petits bois</span>${has?'<span class="tag ok">Croquis réalisé</span>':'<span class="tag">Croquis conseillé</span>'}<p class="muted" style="margin:6px 0 8px;font-size:14px">Dessinez la répartition des petits bois sur le vitrage, avec les cotes utiles.</p><button type="button" class="btn sm" data-act="newsk">${has?'Ajouter un autre croquis':'Faire le croquis'}</button></div>`}
+  if(f.t==='pb')return `<div class="fld">${lab}<p class="muted" style="margin:6px 0 10px;font-size:14px">Touchez la disposition correspondante. « 4 × 3 » = 4 carreaux en largeur et 3 en hauteur.</p><div class="pbg">${PB.map(o=>`<button type="button" class="pbi${v===o.l?' on':''}" data-act="chip" data-k="${f.k}" data-v="${esc(o.l)}" aria-label="${esc(o.l)}">${pbSVG(o)}<span>${esc(o.s)}</span></button>`).join('')}</div>${v?`<p class="muted" style="margin:10px 0 0;font-size:14px">Sélection : <b>${esc(v)}</b> · touchez à nouveau pour désélectionner.</p>`:''}</div>`;
   if(f.t==='check')return `<button type="button" class="tog${v?' on':''}" data-act="tog" data-k="${f.k}"><i></i><span>${esc(f.l)}</span></button>`;
   if(f.t==='mm'){const bad=f.pl&&v&&(+v<f.pl[0]||+v>f.pl[1]);return `<label class="fld${miss?' miss':''}">${lab}<div class="mm"><input type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" data-k="${f.k}" data-t="mm"${f.pl?` data-pl="${f.pl}"`:''} value="${esc(v)}" placeholder="0"><b>mm</b></div>${f.pl?`<small class="pl">${bad?PLMSG:''}</small>`:''}</label>`}
   if(f.t==='text')return `<label class="fld">${lab}<textarea class="txt" data-k="${f.k}">${esc(v)}</textarea></label>`;
@@ -441,18 +483,30 @@ function openSketch(h,mediaId,bgData){
   const ov=document.createElement('div');ov.className='sk';
   ov.innerHTML=`<div class="bar"><button class="sw on" data-c="#2D3D74" style="background:#2D3D74" aria-label="Bleu"></button><button class="sw" data-c="#F06691" style="background:#F06691" aria-label="Rose"></button><button class="sw" data-c="#111111" style="background:#111" aria-label="Noir"></button>
   <button class="btn sm" data-w="3">Fin</button><button class="btn sm on" data-w="7">Épais</button><span class="sp"></span>
+  <span class="skflag" id="sk-flag">Trait droit</span>
   <button class="btn sm" id="sk-undo">Annuler</button><button class="btn sm" id="sk-clear">Effacer</button><button class="btn sm" id="sk-close">Fermer</button><button class="btn sm pri" id="sk-save">Enregistrer</button></div>
   <div class="wrap"><canvas id="skc"></canvas></div>`;
   document.body.appendChild(ov);
-  const cv=$('#skc',ov),cx=cv.getContext('2d');let col='#2D3D74',wd=7,drawing=false,last=null,snaps=[],base=null;
+  const cv=$('#skc',ov),cx=cv.getContext('2d');let col='#2D3D74',wd=7,drawing=false,last=null,snaps=[],base=null,p0=null,shot=null,straight=false,holdT=null;
   const init=img=>{let W=1400,H=900;if(img){const s=Math.min(1,1400/Math.max(img.width,img.height));W=Math.round(img.width*s);H=Math.round(img.height*s)}cv.width=W;cv.height=H;cx.fillStyle='#fff';cx.fillRect(0,0,W,H);if(img)cx.drawImage(img,0,0,W,H);base=cx.getImageData(0,0,W,H)};
   const start=async()=>{let src=bgData;if(mediaId){const m=await getMedia(mediaId);if(m)src=m.data}
     if(src){const im=new Image();im.onload=()=>init(im);im.onerror=()=>init();im.src=src}else init()};
   start();
   const pt=e=>{const r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*cv.width/r.width,y:(e.clientY-r.top)*cv.height/r.height,p:e.pointerType==='pen'&&e.pressure?e.pressure:.5}};
-  cv.addEventListener('pointerdown',e=>{e.preventDefault();cv.setPointerCapture(e.pointerId);snaps.push(cx.getImageData(0,0,cv.width,cv.height));if(snaps.length>25)snaps.shift();drawing=true;last=pt(e);cx.fillStyle=col;cx.beginPath();cx.arc(last.x,last.y,wd/2,0,7);cx.fill()});
-  cv.addEventListener('pointermove',e=>{if(!drawing)return;e.preventDefault();const p=pt(e);cx.strokeStyle=col;cx.lineCap='round';cx.lineJoin='round';cx.lineWidth=e.pointerType==='pen'?wd*(.4+p.p*1.2):wd;cx.beginPath();cx.moveTo(last.x,last.y);cx.lineTo(p.x,p.y);cx.stroke();last=p});
-  const end=()=>{drawing=false};cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  /* Trait droit : on maintient la pointe immobile en fin de tracé, le trait se redresse
+     et reste ajustable tant que le stylet (ou le doigt) n'est pas relevé. */
+  const HOLD=550,TOL=6,MINL=24;
+  const flag=on=>{const f=$('#sk-flag',ov);if(f)f.classList.toggle('on',on)};
+  const line=p=>{if(!shot)return;cx.putImageData(shot,0,0);cx.strokeStyle=col;cx.lineCap='round';cx.lineJoin='round';cx.lineWidth=wd;cx.beginPath();cx.moveTo(p0.x,p0.y);cx.lineTo(p.x,p.y);cx.stroke()};
+  const arm=()=>{clearTimeout(holdT);holdT=setTimeout(()=>{if(!drawing||straight)return;if(Math.hypot(last.x-p0.x,last.y-p0.y)<MINL)return;straight=true;flag(true);line(last)},HOLD)};
+  const disarm=()=>{clearTimeout(holdT);holdT=null};
+  cv.addEventListener('pointerdown',e=>{e.preventDefault();cv.setPointerCapture(e.pointerId);shot=cx.getImageData(0,0,cv.width,cv.height);snaps.push(shot);if(snaps.length>25)snaps.shift();drawing=true;straight=false;last=pt(e);p0=last;cx.fillStyle=col;cx.beginPath();cx.arc(last.x,last.y,wd/2,0,7);cx.fill();arm()});
+  cv.addEventListener('pointermove',e=>{if(!drawing)return;e.preventDefault();const p=pt(e);
+    if(straight){line(p);last=p;return}
+    if(Math.hypot(p.x-last.x,p.y-last.y)>TOL)arm();
+    cx.strokeStyle=col;cx.lineCap='round';cx.lineJoin='round';cx.lineWidth=e.pointerType==='pen'?wd*(.4+p.p*1.2):wd;cx.beginPath();cx.moveTo(last.x,last.y);cx.lineTo(p.x,p.y);cx.stroke();last=p});
+  const end=()=>{disarm();drawing=false;straight=false;shot=null;flag(false)};
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
   ov.addEventListener('click',async e=>{const t=e.target.closest('button');if(!t)return;
     if(t.dataset.c){col=t.dataset.c;ov.querySelectorAll('.sw').forEach(b=>b.classList.toggle('on',b===t))}
     else if(t.dataset.w){wd=+t.dataset.w;ov.querySelectorAll('[data-w]').forEach(b=>b.classList.toggle('on',b===t))}
