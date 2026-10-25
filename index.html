@@ -90,12 +90,40 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .secnav::-webkit-scrollbar{display:none}
 .secnav button{white-space:nowrap;min-height:40px;padding:0 13px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);font-weight:650;font-size:14px;display:inline-flex;align-items:center;gap:6px}
 .secnav button.on{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.more{margin-top:4px}
+.other{margin-top:8px;color:var(--muted);border-style:dashed;font-weight:600}
+.flds+.more{margin-top:8px}
 .secnav .dot{width:7px;height:7px;border-radius:99px;background:var(--danger);display:inline-block}
 .secnav button.on .dot{background:var(--on-primary)}
 .kbb{position:fixed;left:0;right:0;bottom:0;display:none;gap:8px;align-items:center;padding:8px max(12px,env(safe-area-inset-left,0px)) 8px max(12px,env(safe-area-inset-right,0px));background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -2px 12px rgba(0,0,0,.08);z-index:30}
 .txt,.sel{width:100%;min-height:48px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface)}
 textarea.txt{min-height:84px;resize:vertical}
 .chips+.txt{margin-top:8px}
+.ordl{display:grid;gap:8px;margin-top:4px}
+.ordi{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);min-height:52px}
+.ordi.drag{border-color:var(--accent);background:var(--accent-soft);opacity:.95}
+.ordi .h{touch-action:none;cursor:grab;color:var(--muted);font-size:20px;padding:0 4px;min-width:28px;text-align:center}
+.ordi b{font:700 15px var(--mono);color:var(--accent-ink);background:var(--accent-soft);border-radius:6px;padding:3px 8px;min-width:28px;text-align:center}
+.ordi .t{flex:1;font-weight:600}
+.ordi .btn{min-width:44px}
+.pkg{display:grid;grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:10px}
+.pki{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 6px 8px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);-webkit-tap-highlight-color:transparent}
+.pki svg{width:100%;max-width:104px;height:auto}
+.pki span{font-size:12.5px;font-weight:650;line-height:1.2;text-align:center;color:var(--muted)}
+.pki.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.pki.on span{color:var(--accent-ink)}
+.pki.cum{border-style:dashed}
+.pki.cum.on{border-style:solid}
+.pki .mur{fill:var(--line)}
+.pki .pre{fill:none;stroke:currentColor;stroke-width:1.5;stroke-dasharray:3 2}
+.pki .dor{fill:currentColor}
+.pki .cad{fill:none;stroke:currentColor;stroke-width:2}
+.pki .anc{fill:var(--muted);opacity:.45}
+.pki .del{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:3 2;opacity:.7}
+.pki .vit{stroke:currentColor;stroke-width:2.5;opacity:.5}
+.pki .sym{fill:none;stroke:currentColor;stroke-width:1.6}
+.pki .pau{fill:currentColor}
+.pki .poi{fill:currentColor}
 .pbg{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:8px}
 .pbi{display:flex;flex-direction:column;align-items:center;gap:6px;padding:9px 4px 7px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);-webkit-tap-highlight-color:transparent}
 .pbi svg{width:40px;height:56px;display:block}
@@ -135,8 +163,15 @@ textarea.txt{min-height:84px;resize:vertical}
 .dlg .acts{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom,0px));background:var(--primary);color:var(--on-primary);padding:10px 16px;border-radius:99px;z-index:60;font-weight:650;max-width:90vw;text-align:center}
 .sk{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.sk .sep{width:1px;height:28px;background:var(--line)}
+.sk .bar button[disabled]{opacity:.4}
 .sk .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px max(12px,env(safe-area-inset-left,0px)) 8px max(12px,env(safe-area-inset-right,0px));background:var(--surface);border-bottom:1px solid var(--line)}
 .sk .wrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:8px}
+.dg .dgout{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:10px max(12px,env(safe-area-inset-left,0px));background:var(--surface);border-bottom:1px solid var(--line)}
+.dgnum{display:flex;gap:8px}
+.dgd{min-width:52px;min-height:56px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);font:700 30px var(--mono);color:var(--ink)}
+.dg .wrap{align-items:stretch}
+.dg canvas{width:100%;height:100%;touch-action:none}
 .skflag{font-size:13px;font-weight:700;color:var(--accent-ink);background:var(--accent-soft);border-radius:99px;padding:5px 12px;opacity:0;transition:opacity .12s}
 .skflag.on{opacity:1}
 .sk canvas{background:#fff;max-width:100%;max-height:100%;touch-action:none;border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow)}
@@ -195,7 +230,8 @@ function idbDel(st,k){return new Promise(res=>{if(!db){delete mem[st][k];return 
 const cache=new Map();
 async function getMedia(id){if(cache.has(id))return cache.get(id);const m=await idbGet('media',id);if(m){if(cache.size>40)cache.clear();cache.set(id,m)}return m}
 let S={clients:[],chantiers:[],staff:['Julien','Allan','Anthony','Christophe']}, saveT=null;
-function save(skip){clearTimeout(saveT);if(!skip){try{const c=V&&V.chId&&chById(V.chId);if(c)c.mod=Date.now()}catch(e){}}saveT=setTimeout(()=>{idbPut('kv','state',S);const e=$('#saved');if(e)e.textContent='Enregistré sur cette tablette'},250)}
+function save(skip){clearTimeout(saveT);if(!skip){try{const c=V&&V.chId&&chById(V.chId);if(c)c.mod=Date.now()}catch(e){}}
+  saveT=setTimeout(()=>{idbPut('kv','state',S);const e=$('#saved');if(e)e.textContent='Enregistré sur cette tablette';if(!skip)syncSoon()},250)}
 
 /* ---------- Modèles de blocs ---------- */
 const COUL=['Blanc (9016)','Gris anthracite (7016)','Noir (9005)','Gris clair (7035)','Chêne doré'];
@@ -216,7 +252,8 @@ const PTS3={t:'Relevé en 3 points',f:[
   {k:'dg1',l:'Diagonale haut gauche à bas droite',t:'mm',if:d=>d.pts3},{k:'dg2',l:'Diagonale haut droite à bas gauche',t:'mm',if:d=>d.pts3},
   {t:'eq',if:d=>d.pts3}]};
 const POSE={t:'Pose',f:[
-  {k:'pose',l:'Type de pose',o:['Rénovation sur dormant existant','Dépose totale','En applique','En feuillure','En tunnel','Neuf']},
+  {k:'pose',l:'Type de pose',o:['Rénovation sur dormant existant','En applique','En feuillure','En tunnel','Neuf'],t:'pick',pk:'pose'},
+  {k:'deposeTot',l:'Dépose totale',t:'check',hid:1},
   {k:'contraintes',l:'Contraintes particulières',t:'text'}]};
 const ACCES={t:'Contraintes',f:[
   {k:'contraintes',l:'Contraintes particulières',t:'text'}]};
@@ -226,11 +263,11 @@ const STRUCT=[{k:'support',l:'Nature du support (structure)',o:['Béton','Brique
   {k:'isolant',l:"Épaisseur de l'isolant intérieur",t:'mm',if:d=>d.isolantNat}];
 const MODE={k:'modeCote',l:'Mode de cote',o:['Tableau','Fabrication'],req:1,seg:1};
 const MODE_FEN=Object.assign({},MODE,{o:['Tableau','Fabrication','Passage rénovation','Passage semi-rénovation']});
-const SENS={k:'sens',l:"Sens d'ouverture (vu de l'intérieur)",o:['Droite','Gauche']};
+const SENSF={k:'sens',l:"Sens d'ouverture (vu de l'intérieur)",o:['Droite','Gauche'],t:'pick',pk:'sens'};
 const volet=(label,prefix,types)=>({label,prefix,s:[
   {t:'Cotes',f:[HH(),LL(),{k:'prof',l:'Profondeur du tableau',t:'mm'},{k:'epMur',l:'Épaisseur du mur',t:'mm'},{k:'lie',l:'Associé à (repère de la fenêtre)',t:'line',if:d=>d.lie}]},
   {t:'Configuration',f:[{k:'type',l:'Type',o:types},{k:'vantaux',l:'Nombre de vantaux',o:['1','2','3','4']},
-    {k:'partic',l:'Particularités (plusieurs choix possibles)',t:'multi',o:['Repliable en tableau','Rabattable à l\'extérieur','Coulissant']},SENS]},
+    {k:'partic',l:'Particularités (plusieurs choix possibles)',t:'multi',o:['Repliable en tableau','Rabattable à l\'extérieur','Coulissant']},SENSF]},
   {t:'Matériau et finition',f:[{k:'materiau',l:'Matériau',o:['Bois','Aluminium','PVC','Composite'],req:1},
     {k:'couleurExt',l:'Couleur',o:COUL},{k:'finBois',l:'Finition',o:['Lasure','Peinture'],if:isMat('Bois')},{k:'aspect',l:'Aspect',o:['Lisse','Ancien']}]},
   {t:'Pose et fixations',f:[{k:'poseVB',l:'Type de pose',o:['En tableau','En applique','Sur gonds à sceller','Sur pentures']},
@@ -277,6 +314,24 @@ const PB=[
  {l:'Triple carreau haut et bas par vitrage (1/4 haut et bas)',s:'Haut/bas ×3',n:pbBand(3,1)},
  ...[2,3,4,5,6].flatMap(c=>[2,3,4].map(r=>({l:`${c} × ${r} carreaux par vitrage`,s:`${c} × ${r}`,n:pbGrid(c,r)})))];
 const pbSVG=o=>`<svg viewBox="0 0 40 56" aria-hidden="true"><rect x="2.2" y="2.2" width="35.6" height="51.6" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.4"/>${o.n.map(([a,b,c,d])=>`<line x1="${(2.2+a*35.6).toFixed(1)}" y1="${(2.2+b*51.6).toFixed(1)}" x2="${(2.2+c*35.6).toFixed(1)}" y2="${(2.2+d*51.6).toFixed(1)}" stroke="currentColor" stroke-width="1.7"/>`).join('')}</svg>`;
+/* ---------- Schémas cliquables (sens d'ouverture, type de pose) ---------- */
+const SV=(w,h,c)=>`<svg viewBox="0 0 ${w} ${h}" aria-hidden="true">${c}</svg>`;
+/* Coupe horizontale : mur coupé à gauche et à droite, intérieur en haut, extérieur en bas. */
+const MURS='<rect class="mur" x="0" y="6" width="26" height="60"/><rect class="mur" x="66" y="6" width="26" height="60"/>';
+const dor=(y,h)=>`<rect class="dor" x="26" y="${y}" width="8" height="${h}" rx="1"/><rect class="dor" x="58" y="${y}" width="8" height="${h}" rx="1"/>`;
+const vitre=y=>`<line class="vit" x1="34" y1="${y}" x2="58" y2="${y}"/>`;
+const POSES={
+ 'Rénovation sur dormant existant':MURS+'<rect class="anc" x="26" y="16" width="8" height="34"/><rect class="anc" x="58" y="16" width="8" height="34"/>'+'<rect class="dor" x="30" y="20" width="6" height="24" rx="1"/><rect class="dor" x="56" y="20" width="6" height="24" rx="1"/>'+vitre(32),
+ 'En applique':MURS+'<rect class="dor" x="16" y="8" width="18" height="16" rx="1"/><rect class="dor" x="58" y="8" width="18" height="16" rx="1"/>'+vitre(16),
+ 'En feuillure':MURS+'<rect class="mur" x="26" y="42" width="8" height="24"/><rect class="mur" x="58" y="42" width="8" height="24"/>'+dor(18,22)+vitre(29),
+ 'En tunnel':MURS+dor(28,18)+vitre(37),
+ 'Neuf':MURS+'<rect class="pre" x="22" y="14" width="14" height="38"/><rect class="pre" x="56" y="14" width="14" height="38"/>'+dor(20,26)+vitre(33)};
+const SENS={
+ 'Droite':'<rect class="cad" x="8" y="8" width="56" height="56" rx="2"/><path class="sym" d="M12 12L58 36L12 60"/><circle class="pau" cx="62" cy="14" r="3.2"/><circle class="pau" cx="62" cy="58" r="3.2"/><rect class="poi" x="6" y="30" width="5" height="12" rx="2"/>',
+ 'Gauche':'<rect class="cad" x="8" y="8" width="56" height="56" rx="2"/><path class="sym" d="M60 12L14 36L60 60"/><circle class="pau" cx="10" cy="14" r="3.2"/><circle class="pau" cx="10" cy="58" r="3.2"/><rect class="poi" x="61" y="30" width="5" height="12" rx="2"/>'};
+const DEPOSE=MURS+'<rect class="del" x="22" y="12" width="48" height="44"/>'+'<path class="del" d="M30 20L62 48M62 20L30 48"/>';
+const PICKS={pose:{w:92,h:72,o:POSES,plus:{deposeTot:{l:'Dépose totale',svg:DEPOSE}},note:'Coupe vue de dessus : intérieur en haut, extérieur en bas. « Dépose totale » se cumule avec le type de pose choisi.'},
+  sens:{w:72,h:72,o:SENS,note:'Vu de l\'intérieur : les ronds marquent les paumelles, la barre la poignée, la pointe du V le côté des paumelles.'}};
 const T={
  fenetre:{label:'Fenêtre',prefix:'F',s:[
   {t:'Cotes',f:[MODE_FEN,HH(),LL(),
@@ -286,7 +341,7 @@ const T={
   {t:'Configuration',f:[{k:'materiau',l:'Matériau',o:MAT,req:1,rr:1},
     {k:'type',l:'Type (plusieurs choix possibles)',t:'multi',o:['Fenêtre','OB','Porte-fenêtre','Fixe','Coulissant','Galandage','Soufflet']},
     {k:'vantaux',l:'Nombre de vantaux',o:['1','2','3','4']},
-    {k:'sens',l:"Sens d'ouverture (vu de l'intérieur)",o:['Droite','Gauche'],if:d=>!noSens(d)},
+    Object.assign({},SENSF,{if:d=>!noSens(d)}),
     {k:'petitbois',l:'Petits bois',t:'check'},
     {k:'pbType',l:'Type de petits bois (plusieurs choix possibles)',t:'multi',o:['Intravitrage','Collés','Collé avec intercalaire fictif','Couleur menuiserie','Laiton','Plomb'],if:d=>d.petitbois},
     {k:'pbDisp',l:'Disposition des petits bois',t:'pb',if:d=>d.petitbois},
@@ -380,11 +435,26 @@ function fuse(t,a,b,titre){const s=t.s,ia=s.findIndex(x=>x.t===a),ib=s.findIndex
   if(ia<0||ib<0)return;s[ia]={t:titre,f:s[ia].f.concat(s[ib].f)};s.splice(ib,1)}
 for(const k in T){fuse(T[k],'Configuration','Options','Produit');fuse(T[k],'Pose','Points de contrôle','Pose et contrôles')}
 
+/* 2.5 : champs repliés sous « Plus d'options ». Arbitrage métier, validé avec Julien.
+   Un champ rempli force l'ouverture du groupe : rien n'est jamais caché une fois saisi. */
+const RARE={
+ fenetre:['pts3','petitbois','pbType','pbDisp','pbCroquis','traverse','meneau','meneauPos','imposte','imposteType',
+   'allegeBas','allegeBasType','bicolor','couleurInt','vitrageCar','vitrageLibre','pmr','serrurePB','serrurePBopt',
+   'aeration','aerationType','deposeAppui','appui','delignage','comacelle','gardecorps','sansVoletRDC','contraintes'],
+ vr:['ctab','tabH','tabL','moustiquaire','bioclim','orientables','domotique','distTab','pointCmd','contraintes'],
+ porte:['pts3','epMur','oeilleton','entrebailleur','seuilAlu','fermePorte','cylindre','auvent','contraintes'],
+ vb:['partic','aspect','equip','depV','rejet','contraintes'],
+ pers:['partic','aspect','equip','depV','rejet','contraintes'],
+ storeInt:['largTab','hsl','ouvertureToile','lambrequin','domotique','distTab','obstacles','fixOk','contraintes'],
+ storeExt:['largTab','hsl','ouvertureToile','lambrequin','capteur','domotique','distTab','obstacles','vent','fixOk','contraintes'],
+ autre:['contraintes']};
+for(const k in T){const r=RARE[k]||[];for(const sc of T[k].s)for(const f of sc.f)if(f.k&&r.includes(f.k))f.r=1}
+
 const DEC={t:'Découverte client',f:[
   {k:'logement',l:'Logement',o:['Maison','Appartement']},
   {k:'statut',l:'Statut du client',o:['Propriétaire occupant','Propriétaire bailleur','Autre']},
   {k:'besoins',l:'Besoins et attentes',t:'text'},
-  {k:'priorites',l:'Priorités',t:'multi',o:['Isolation thermique','Isolation phonique','Sécurité','Esthétique','Économies d\'énergie','Confort d\'été','Accessibilité','Prix','Délai']},
+  {k:'priorites',l:'Priorités du client',t:'multi',ord:1,o:['Isolation thermique','Isolation phonique','Sécurité','Esthétique','Économies d\'énergie','Confort d\'été','Accessibilité','Prix','Délai']},
   {k:'budget',l:'Budget envisagé',o:['Moins de 3 000 €','3 000 à 5 000 €','5 000 à 8 000 €','8 000 à 12 000 €','12 000 à 16 000 €','16 000 à 20 000 €','20 000 à 30 000 €','30 000 à 40 000 €','Plus de 40 000 €','Pas encore défini']},
   {k:'delai',l:'Délai souhaité',o:['Dès que possible','Dans les 3 mois','Dans les 6 mois','Dans l\'année','Pas de date']},
   {k:'aides',l:'Aides envisagées',o:['MaPrimeRénov\'','CEE','PTZ','Aucune','À étudier']},
@@ -444,7 +514,8 @@ function migrate(){for(const c of S.chantiers)for(const r of c.pieces)for(const 
   if(p.kind==='porte'&&typeof d.type==='string'&&d.type)d.type=[d.type];
   if(p.kind==='fenetre'&&['Feuilleté',"Retardataire d'effraction",'Phonique','Contrôle solaire','Dépoli ou sablé'].includes(d.vitrage)){d.vitrageCar=[d.vitrage];d.vitrage=''}
   if(d.habillages==='Oui'||d.habillages===true){if(!d.habInt)d.habInt='Oui';if(!d.habExt)d.habExt='Oui'}
-  for(const k of ['alim','depose','gardecorps','appui','habillages','auvent']){if(d[k]===true)d[k]='Oui';else if(d[k]===false)d[k]=''}}}
+  for(const k of ['alim','depose','gardecorps','appui','habillages','auvent']){if(d[k]===true)d[k]='Oui';else if(d[k]===false)d[k]=''}
+  if(d.pose==='Dépose totale'){d.deposeTot=true;d.pose=''}}}
 function hintHTML(){let st=false;try{st=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone}catch(e){}
   return (st||S.noHint)?'':`<div class="card"><b>Installez l'application sur l'écran d'accueil</b><p class="muted" style="margin:6px 0 10px">Sans cela, la tablette peut effacer les relevés après quelques jours sans ouverture. Sur iPad : bouton Partager, puis « Sur l'écran d'accueil ».</p><button class="btn sm" data-act="hint">C'est fait</button></div>`}
 const qte=p=>Math.max(1,parseInt(p.d.qte)||1);
@@ -462,21 +533,32 @@ function fieldHTML(f,d,showMiss){
     return `<div class="fld"><button type="button" class="btn" data-act="colall">Même couleur partout</button> ${same?'<span class="tag ok">Identique partout</span>':''}<p class="muted" style="margin:6px 0 0;font-size:14px">Reprend la couleur du tablier pour les autres éléments affichés.</p></div>`}
   if(f.t==='info'){const h=curHolder(),has=h&&Object.values(h.mk||{}).includes('sketch');
     return `<div class="fld"><span class="l">Croquis des petits bois</span>${has?'<span class="tag ok">Croquis réalisé</span>':'<span class="tag">Croquis conseillé</span>'}<p class="muted" style="margin:6px 0 8px;font-size:14px">Dessinez la répartition des petits bois sur le vitrage, avec les cotes utiles.</p><button type="button" class="btn sm" data-act="newsk">${has?'Ajouter un autre croquis':'Faire le croquis'}</button></div>`}
+  if(f.t==='pick'){const P=PICKS[f.pk],per=v&&!f.o.includes(v),lib=per||(V.other||{})[f.k];
+    const plus=Object.entries(P.plus||{}).map(([pk,po])=>`<button type="button" class="pki cum${d[pk]?' on':''}" data-act="tog" data-k="${pk}">${SV(P.w,P.h,po.svg)}<span>${esc(po.l)}</span></button>`).join('');
+    return `<div class="fld${miss?' miss':''}">${lab}<p class="muted" style="margin:6px 0 10px;font-size:14px">${esc(P.note)}</p><div class="pkg">${f.o.map(o=>`<button type="button" class="pki${v===o?' on':''}" data-act="chip" data-k="${f.k}" data-v="${esc(o)}"${rr}>${SV(P.w,P.h,P.o[o]||'')}<span>${esc(o)}</span></button>`).join('')}${plus}</div>${lib?`<input class="txt" type="text" data-k="${f.k}" value="${esc(v)}" placeholder="Autre ou précision"${rr} style="margin-top:10px">`:`<button type="button" class="btn sm other" data-act="other" data-k="${f.k}">Autre ou précision…</button>`}</div>`}
   if(f.t==='pb')return `<div class="fld">${lab}<p class="muted" style="margin:6px 0 10px;font-size:14px">Touchez la disposition correspondante. « 4 × 3 » = 4 carreaux en largeur et 3 en hauteur.</p><div class="pbg">${PB.map(o=>`<button type="button" class="pbi${v===o.l?' on':''}" data-act="chip" data-k="${f.k}" data-v="${esc(o.l)}" aria-label="${esc(o.l)}">${pbSVG(o)}<span>${esc(o.s)}</span></button>`).join('')}</div>${v?`<p class="muted" style="margin:10px 0 0;font-size:14px">Sélection : <b>${esc(v)}</b> · touchez à nouveau pour désélectionner.</p>`:''}</div>`;
   if(f.t==='check')return `<button type="button" class="tog${v?' on':''}" data-act="tog" data-k="${f.k}"><i></i><span>${esc(f.l)}</span></button>`;
   if(f.t==='mm'){const bad=f.pl&&v&&(+v<f.pl[0]||+v>f.pl[1]);return `<label class="fld${miss?' miss':''}">${lab}<div class="mm"><input type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" data-k="${f.k}" data-t="mm"${f.pl?` data-pl="${f.pl}"`:''} value="${esc(v)}" placeholder="0"><b>mm</b></div>${f.pl?`<small class="pl">${bad?PLMSG:''}</small>`:''}</label>`}
   if(f.t==='text')return `<label class="fld">${lab}<textarea class="txt" data-k="${f.k}">${esc(v)}</textarea></label>`;
-  if(f.t==='multi'){const a=Array.isArray(v)?v:(v?[v]:[]);return `<div class="fld">${lab}<div class="chips">${f.o.map(o=>`<button type="button" class="chip${a.includes(o)?' on':''}" data-act="multi" data-k="${f.k}" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div></div>`}
+  if(f.t==='multi'){const a=Array.isArray(v)?v:(v?[v]:[]);
+    const ord=f.ord&&a.length>1?`<p class="muted" style="margin:10px 0 6px;font-size:14px">Classez de la plus importante à la moins importante : tirez la poignée, ou utilisez les flèches.</p><div class="ordl" data-k="${f.k}">${a.map((o,i)=>`<div class="ordi" data-v="${esc(o)}"><span class="h" aria-hidden="true">⠿</span><b>${i+1}</b><span class="t">${esc(o)}</span><button type="button" class="btn sm" data-act="ordmv" data-k="${f.k}" data-v="${esc(o)}" data-d="-1" aria-label="Monter"${i?'':' disabled'}>↑</button><button type="button" class="btn sm" data-act="ordmv" data-k="${f.k}" data-v="${esc(o)}" data-d="1" aria-label="Descendre"${i===a.length-1?' disabled':''}>↓</button></div>`).join('')}</div>`:'';
+    return `<div class="fld">${lab}<div class="chips">${f.o.map(o=>`<button type="button" class="chip${a.includes(o)?' on':''}" data-act="multi" data-k="${f.k}" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>${ord}</div>`}
   if(f.t==='line'){const ls=f.list?`<datalist id="dl-${f.k}">${f.list.map(o=>`<option value="${esc(o)}">`).join('')}</datalist>`:'';return `<label class="fld${miss?' miss':''}">${lab}<input class="txt" type="${f.type||'text'}" data-k="${f.k}"${f.list?` list="dl-${f.k}"`:''} value="${esc(v)}">${ls}</label>`}
-  return `<div class="fld${miss?' miss':''}">${lab}<div class="chips">${f.o.map(o=>`<button type="button" class="chip${v===o?' on':''}" data-act="chip" data-k="${f.k}" data-v="${esc(o)}"${rr}>${esc(o)}</button>`).join('')}</div>${f.seg?'':`<input class="txt" type="text" data-k="${f.k}" value="${esc(v)}" placeholder="Autre ou précision"${rr}>`}</div>`;
+  const perso=v&&!f.o.includes(v),libre=perso||(V.other||{})[f.k];
+  return `<div class="fld${miss?' miss':''}">${lab}<div class="chips">${f.o.map(o=>`<button type="button" class="chip${v===o?' on':''}" data-act="chip" data-k="${f.k}" data-v="${esc(o)}"${rr}>${esc(o)}</button>`).join('')}</div>${f.seg?'':libre?`<input class="txt" type="text" data-k="${f.k}" value="${esc(v)}" placeholder="Autre ou précision"${rr}>`:`<button type="button" class="btn sm other" data-act="other" data-k="${f.k}">Autre ou précision…</button>`}</div>`;
 }
-function sectionHTML(s,d,showMiss,id){
-  const fs=s.f.filter(f=>visible(f,d)&&f.t!=='act');if(!fs.length)return'';
+const hasVal=(f,d)=>{const v=d[f.k];return Array.isArray(v)?v.length>0:f.t==='check'?!!v:!!String(v==null?'':v).trim()};
+function fieldsHTML(fs,d,showMiss){
   let out='',buf=[];
   const flush=()=>{if(buf.length){out+=`<div class="grid2">${buf.map(f=>fieldHTML(f,d,showMiss)).join('')}</div>`;buf=[]}};
-  for(const f of fs){if(f.t==='act')continue;if(f.t==='mm')buf.push(f);else{flush();out+=fieldHTML(f,d,showMiss)}}
-  flush();
-  return `<section class="card"${id?` id="${id}"`:''}><h2>${esc(s.t)}</h2><div class="flds">${out}</div></section>`;
+  for(const f of fs){if(f.t==='mm')buf.push(f);else{flush();out+=fieldHTML(f,d,showMiss)}}
+  flush();return out}
+function sectionHTML(s,d,showMiss,id){
+  const fs=s.f.filter(f=>visible(f,d)&&f.t!=='act'&&!f.hid);if(!fs.length)return'';
+  const com=fs.filter(f=>!f.r),rare=fs.filter(f=>f.r);
+  const rempli=rare.some(f=>hasVal(f,d)),ouvert=rempli||(V.more||{})[s.t];
+  const more=rare.length?`${rempli?'':`<button type="button" class="btn sm more" data-act="more" data-id="${esc(s.t)}">${ouvert?'− Moins d\'options':`+ Plus d'options (${rare.length})`}</button>`}${ouvert?`<div class="flds">${fieldsHTML(rare,d,showMiss)}</div>`:''}`:'';
+  return `<section class="card"${id?` id="${id}"`:''}><h2>${esc(s.t)}</h2><div class="flds">${fieldsHTML(com,d,showMiss)}</div>${more}</section>`;
 }
 
 /* ---------- Médias ---------- */
@@ -518,69 +600,231 @@ async function toggleRec(){
 }
 
 /* ---------- Croquis ---------- */
-function openSketch(h,mediaId,bgData){
+/* Croquis vectoriel : chaque trait est conservé, donc sélectionnable, déplaçable,
+   supprimable, et l'historique est illimité dans les deux sens. */
+function openSketch(h,mediaId,bgData,bgId){
   const ov=document.createElement('div');ov.className='sk';
-  ov.innerHTML=`<div class="bar"><button class="sw on" data-c="#2D3D74" style="background:#2D3D74" aria-label="Bleu"></button><button class="sw" data-c="#F06691" style="background:#F06691" aria-label="Rose"></button><button class="sw" data-c="#111111" style="background:#111" aria-label="Noir"></button>
-  <button class="btn sm" data-w="3">Fin</button><button class="btn sm on" data-w="7">Épais</button><button class="btn sm" id="sk-erase">Gomme</button><span class="sp"></span>
-  <span class="skflag" id="sk-flag">Trait droit</span>
-  <button class="btn sm" id="sk-undo">Annuler</button><button class="btn sm" id="sk-clear">Effacer</button><button class="btn sm" id="sk-close">Fermer</button><button class="btn sm pri" id="sk-save">Enregistrer</button></div>
+  ov.innerHTML=`<div class="bar">
+  <button class="btn sm on" data-tool="draw">Crayon</button><button class="btn sm" data-tool="sel">Sélection</button><button class="btn sm" data-tool="era">Gomme</button>
+  <span class="sep"></span>
+  <button class="sw on" data-c="#2D3D74" style="background:#2D3D74" aria-label="Bleu"></button><button class="sw" data-c="#F06691" style="background:#F06691" aria-label="Rose"></button><button class="sw" data-c="#111111" style="background:#111" aria-label="Noir"></button>
+  <button class="btn sm" data-w="3">Fin</button><button class="btn sm on" data-w="7">Épais</button>
+  <span class="sp"></span><span class="skflag" id="sk-flag">Trait droit</span>
+  <button class="btn sm" id="sk-del" hidden>Supprimer le trait</button>
+  <button class="btn sm" id="sk-undo">Annuler</button><button class="btn sm" id="sk-redo">Rétablir</button><button class="btn sm" id="sk-clear">Effacer</button><button class="btn sm" id="sk-close">Fermer</button><button class="btn sm pri" id="sk-save">Enregistrer</button></div>
   <div class="wrap"><canvas id="skc"></canvas></div>`;
   document.body.appendChild(ov);
-  const cv=$('#skc',ov),cx=cv.getContext('2d');let col='#2D3D74',wd=7,drawing=false,last=null,snaps=[],base=null,p0=null,shot=null,straight=false,holdT=null,gom=false,pat=null,pid=null,penT=0,bb=null,undoBytes=0;
-  const tmp=document.createElement('canvas'),tx=tmp.getContext('2d');
-  const init=img=>{let W=1400,H=900;if(img){const s=Math.min(1,1400/Math.max(img.width,img.height));W=Math.round(img.width*s);H=Math.round(img.height*s)}cv.width=W;cv.height=H;cx.fillStyle='#fff';cx.fillRect(0,0,W,H);if(img)cx.drawImage(img,0,0,W,H);base=cx.getImageData(0,0,W,H);tmp.width=W;tmp.height=H;snaps=[];undoBytes=0;
-    const bc=document.createElement('canvas');bc.width=W;bc.height=H;bc.getContext('2d').putImageData(base,0,0);pat=cx.createPattern(bc,'no-repeat')};
-  const start=async()=>{let src=bgData;if(mediaId){const m=await getMedia(mediaId);if(m)src=m.data}
+  const cv=$('#skc',ov),cx=cv.getContext('2d');
+  let col='#2D3D74',wd=7,tool='draw',bg=null,strokes=[],cur=null,sel=-1,drag=null,
+      undo=[],redo=[],drawing=false,pid=null,penT=0,p0=null,straight=false,holdT=null;
+  const clone=a=>a.map(s=>({c:s.c,w:s.w,p:s.p.slice()}));
+  const snap=()=>{undo.push(clone(strokes));if(undo.length>200)undo.shift();redo.length=0;upd()};
+  const upd=()=>{$('#sk-undo',ov).disabled=!undo.length;$('#sk-redo',ov).disabled=!redo.length;$('#sk-del',ov).hidden=sel<0};
+  const init=img=>{let W=1400,H=900;if(img){const s=Math.min(1,1400/Math.max(img.width,img.height));W=Math.round(img.width*s);H=Math.round(img.height*s)}
+    cv.width=W;cv.height=H;bg=img||null;draw()};
+  const draw=()=>{cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);if(bg)cx.drawImage(bg,0,0,cv.width,cv.height);
+    for(let i=0;i<strokes.length;i++)paint(strokes[i],i===sel)};
+  const paint=(s,on)=>{const p=s.p;cx.lineCap='round';cx.lineJoin='round';cx.strokeStyle=s.c;
+    if(p.length<6){cx.fillStyle=s.c;cx.beginPath();cx.arc(p[0],p[1],(p[2]||s.w)/2,0,7);cx.fill()}
+    else for(let i=3;i<p.length;i+=3){cx.lineWidth=(p[i+2]+p[i-1])/2;cx.beginPath();cx.moveTo(p[i-3],p[i-2]);cx.lineTo(p[i],p[i+1]);cx.stroke()}
+    if(on){const [x0,y0,x1,y1]=bbox(s);cx.save();cx.strokeStyle='#F06691';cx.lineWidth=2;cx.setLineDash([6,5]);
+      cx.strokeRect(x0-6,y0-6,x1-x0+12,y1-y0+12);cx.restore()}};
+  const bbox=s=>{let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(let i=0;i<s.p.length;i+=3){const r=s.p[i+2]/2;
+    x0=Math.min(x0,s.p[i]-r);y0=Math.min(y0,s.p[i+1]-r);x1=Math.max(x1,s.p[i]+r);y1=Math.max(y1,s.p[i+1]+r)}return [x0,y0,x1,y1]};
+  const segD=(x,y,ax,ay,bx,by)=>{const dx=bx-ax,dy=by-ay,l=dx*dx+dy*dy;
+    let t=l?((x-ax)*dx+(y-ay)*dy)/l:0;t=t<0?0:t>1?1:t;const px=ax+t*dx,py=ay+t*dy;return Math.hypot(x-px,y-py)};
+  const hit=(x,y)=>{for(let i=strokes.length-1;i>=0;i--){const s=strokes[i],p=s.p,m=s.w/2+10;
+      if(p.length<6){if(Math.hypot(x-p[0],y-p[1])<m)return i;continue}
+      for(let j=3;j<p.length;j+=3)if(segD(x,y,p[j-3],p[j-2],p[j],p[j+1])<m)return i}
+    return -1};
+  const start=async()=>{let src=bgData;
+    if(mediaId){const m=await getMedia(mediaId);if(m){if(Array.isArray(m.vec)){strokes=clone(m.vec);upd()}
+      if(m.bg){const b=await getMedia(m.bg);if(b)src=b.data;bgId=m.bg}else if(!m.vec)src=m.data}}
     if(src){const im=new Image();im.onload=()=>init(im);im.onerror=()=>init();im.src=src}else init()};
   start();
-  const pt=e=>{const r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*cv.width/r.width,y:(e.clientY-r.top)*cv.height/r.height,p:e.pointerType==='pen'&&e.pressure?e.pressure:.5}};
-  /* Trait droit : on maintient la pointe immobile en fin de tracé, le trait se redresse
-     et reste ajustable tant que le stylet (ou le doigt) n'est pas relevé. */
-  const HOLD=550,TOL=6,MINL=24;
+  const pt=e=>{const r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*cv.width/r.width,y:(e.clientY-r.top)*cv.height/r.height,
+    w:e.pointerType==='pen'&&e.pressure?wd*(.4+e.pressure*1.2):wd}};
   const flag=on=>{const f=$('#sk-flag',ov);if(f)f.classList.toggle('on',on)};
-  const ink=()=>gom?(pat||'#fff'):col, size=()=>gom?wd*4:wd;
-  const line=p=>{if(!shot)return;cx.putImageData(shot,0,0);cx.strokeStyle=ink();cx.lineCap='round';cx.lineJoin='round';cx.lineWidth=size();cx.beginPath();cx.moveTo(p0.x,p0.y);cx.lineTo(p.x,p.y);cx.stroke()};
-  const mark=p=>{const r=size()/2+3;if(!bb)bb=[p.x-r,p.y-r,p.x+r,p.y+r];
-    else{bb[0]=Math.min(bb[0],p.x-r);bb[1]=Math.min(bb[1],p.y-r);bb[2]=Math.max(bb[2],p.x+r);bb[3]=Math.max(bb[3],p.y+r)}};
-  const pushRegion=(x,y,w,h,img)=>{snaps.push({x,y,img});undoBytes+=w*h*4;
-    while(snaps.length>120||undoBytes>48e6){const o=snaps.shift();undoBytes-=o.img.width*o.img.height*4}
-    const u=$('#sk-undo',ov);if(u)u.disabled=false};
-  const pushUndo=()=>{if(!shot||!bb)return;
-    const x=Math.max(0,Math.floor(bb[0])),y=Math.max(0,Math.floor(bb[1])),
-      w=Math.min(cv.width,Math.ceil(bb[2]))-x,h=Math.min(cv.height,Math.ceil(bb[3]))-y;
-    if(w<=0||h<=0)return;
-    tx.putImageData(shot,0,0);pushRegion(x,y,w,h,tx.getImageData(x,y,w,h))};
-  const arm=()=>{clearTimeout(holdT);holdT=setTimeout(()=>{if(!drawing||straight)return;if(Math.hypot(last.x-p0.x,last.y-p0.y)<MINL)return;straight=true;flag(true);line(last)},HOLD)};
-  const disarm=()=>{clearTimeout(holdT);holdT=null};
-  /* La paume et les doigts sont ignorés pendant et juste après un tracé au stylet. */
+  const HOLD=550,TOL=6,MINL=24;
+  const arm=()=>{clearTimeout(holdT);holdT=setTimeout(()=>{if(!drawing||straight||!cur)return;
+    const n=cur.p.length,lx=cur.p[n-3],ly=cur.p[n-2];
+    if(Math.hypot(lx-p0.x,ly-p0.y)<MINL)return;
+    straight=true;flag(true);cur.p=[p0.x,p0.y,cur.w,lx,ly,cur.w];draw();paint(cur)},HOLD)};
   cv.addEventListener('pointerdown',e=>{
+    if(e.pointerType==='pen')penT=Date.now();else if(e.pointerType==='touch'&&Date.now()-penT<1500)return;
+    if(drawing||drag)return;e.preventDefault();cv.setPointerCapture(e.pointerId);pid=e.pointerId;
+    const p=pt(e);
+    if(tool==='era'){const i=hit(p.x,p.y);if(i>=0){snap();strokes.splice(i,1);sel=-1;draw();upd()}return}
+    if(tool==='sel'){const i=hit(p.x,p.y);sel=i;upd();draw();if(i>=0)drag={x:p.x,y:p.y,moved:false};return}
+    drawing=true;straight=false;p0=p;cur={c:col,w:wd,p:[p.x,p.y,p.w]};strokes.push(cur);
+    cx.fillStyle=col;cx.beginPath();cx.arc(p.x,p.y,p.w/2,0,7);cx.fill();arm()});
+  cv.addEventListener('pointermove',e=>{if(e.pointerId!==pid)return;
     if(e.pointerType==='pen')penT=Date.now();
-    else if(e.pointerType==='touch'&&Date.now()-penT<1500)return;
-    if(drawing)return;
-    e.preventDefault();cv.setPointerCapture(e.pointerId);pid=e.pointerId;
-    shot=cx.getImageData(0,0,cv.width,cv.height);bb=null;
-    drawing=true;straight=false;last=pt(e);p0=last;mark(last);
-    cx.fillStyle=ink();cx.beginPath();cx.arc(last.x,last.y,size()/2,0,7);cx.fill();arm()});
-  cv.addEventListener('pointermove',e=>{if(!drawing||e.pointerId!==pid)return;
-    if(e.pointerType==='pen')penT=Date.now();
-    e.preventDefault();const p=pt(e);mark(p);
-    if(straight){line(p);last=p;return}
-    if(Math.hypot(p.x-last.x,p.y-last.y)>TOL)arm();
-    cx.strokeStyle=ink();cx.lineCap='round';cx.lineJoin='round';cx.lineWidth=gom?size():(e.pointerType==='pen'?wd*(.4+p.p*1.2):wd);cx.beginPath();cx.moveTo(last.x,last.y);cx.lineTo(p.x,p.y);cx.stroke();last=p});
-  const end=e=>{if(e&&e.pointerId!==pid)return;disarm();if(drawing)pushUndo();
-    drawing=false;straight=false;shot=null;bb=null;pid=null;flag(false)};
+    if(drag){e.preventDefault();const p=pt(e),dx=p.x-drag.x,dy=p.y-drag.y;
+      if(!drag.moved&&Math.hypot(dx,dy)<3)return;
+      if(!drag.moved){snap();drag.moved=true}
+      const s=strokes[sel];for(let i=0;i<s.p.length;i+=3){s.p[i]+=dx;s.p[i+1]+=dy}
+      drag.x=p.x;drag.y=p.y;draw();return}
+    if(!drawing)return;e.preventDefault();const p=pt(e);
+    if(straight){cur.p=[p0.x,p0.y,cur.w,p.x,p.y,cur.w];draw();paint(cur);return}
+    const n=cur.p.length;if(Math.hypot(p.x-cur.p[n-3],p.y-cur.p[n-2])>TOL)arm();
+    cur.p.push(p.x,p.y,p.w);
+    cx.strokeStyle=col;cx.lineCap='round';cx.lineJoin='round';cx.lineWidth=(p.w+cur.p[n-1])/2;
+    cx.beginPath();cx.moveTo(cur.p[n-3],cur.p[n-2]);cx.lineTo(p.x,p.y);cx.stroke()});
+  const end=e=>{if(e&&e.pointerId!==pid)return;clearTimeout(holdT);
+    if(drawing&&cur){strokes.pop();snap();strokes.push(cur)}
+    if(drag&&!drag.moved&&sel>=0)draw();
+    drawing=false;straight=false;cur=null;drag=null;pid=null;flag(false);upd()};
   cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
   ov.addEventListener('click',async e=>{const t=e.target.closest('button');if(!t)return;
-    if(t.dataset.c){col=t.dataset.c;gom=false;$('#sk-erase',ov).classList.remove('on');ov.querySelectorAll('.sw').forEach(b=>b.classList.toggle('on',b===t))}
-    else if(t.id==='sk-erase'){gom=!gom;t.classList.toggle('on',gom)}
-    else if(t.dataset.w){wd=+t.dataset.w;ov.querySelectorAll('[data-w]').forEach(b=>b.classList.toggle('on',b===t))}
-    else if(t.id==='sk-undo'){const u=snaps.pop();if(u){undoBytes-=u.img.width*u.img.height*4;cx.putImageData(u.img,u.x,u.y)}else toast('Rien à annuler')}
-    else if(t.id==='sk-clear'){pushRegion(0,0,cv.width,cv.height,cx.getImageData(0,0,cv.width,cv.height));if(base)cx.putImageData(base,0,0)}
+    if(t.dataset.tool){tool=t.dataset.tool;ov.querySelectorAll('[data-tool]').forEach(b=>b.classList.toggle('on',b===t));
+      if(tool!=='sel'){sel=-1;upd();draw()}}
+    else if(t.dataset.c){col=t.dataset.c;ov.querySelectorAll('.sw').forEach(b=>b.classList.toggle('on',b===t));
+      if(sel>=0){snap();strokes[sel].c=col;draw()}}
+    else if(t.dataset.w){wd=+t.dataset.w;ov.querySelectorAll('[data-w]').forEach(b=>b.classList.toggle('on',b===t));
+      if(sel>=0){snap();const s=strokes[sel],r=wd/s.w;s.w=wd;for(let i=2;i<s.p.length;i+=3)s.p[i]*=r;draw()}}
+    else if(t.id==='sk-del'){if(sel<0)return;snap();strokes.splice(sel,1);sel=-1;draw();upd()}
+    else if(t.id==='sk-undo'){const u=undo.pop();if(u){redo.push(clone(strokes));strokes=u;sel=-1;draw();upd()}}
+    else if(t.id==='sk-redo'){const r=redo.pop();if(r){undo.push(clone(strokes));strokes=r;sel=-1;draw();upd()}}
+    else if(t.id==='sk-clear'){if(!strokes.length)return;snap();strokes=[];sel=-1;draw();upd()}
     else if(t.id==='sk-close')ov.remove();
-    else if(t.id==='sk-save'){const data=cv.toDataURL('image/jpeg',.85);ov.remove();
-      if(mediaId){await idbPut('media',mediaId,{id:mediaId,kind:'sketch',data});cache.delete(mediaId);save();render()}else await addMedia(h,'sketch',data)}});
+    else if(t.id==='sk-save'){sel=-1;draw();const data=cv.toDataURL('image/jpeg',.85),vec=clone(strokes);ov.remove();
+      if(mediaId){await idbPut('media',mediaId,{id:mediaId,kind:'sketch',data,vec,bg:bgId||null});cache.delete(mediaId);save();render()}
+      else{const id=uid();await idbPut('media',id,{id,kind:'sketch',data,vec,bg:bgId||null});
+        h.med=h.med||[];h.mk=h.mk||{};h.med.push(id);h.mk[id]='sketch';save();render()}}});
 }
 
+/* ---------- Écriture des cotes au stylet ---------- */
+const GN=20;                      /* la grille de comparaison : 20 × 20 */
+function inkMap(cv){
+  const g=cv.getContext('2d'),W=cv.width,H=cv.height,d=g.getImageData(0,0,W,H).data;
+  let x0=W,y0=H,x1=-1,y1=-1;
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){if(d[(y*W+x)*4]<160){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}}
+  if(x1<0)return null;
+  const w=x1-x0+1,h=y1-y0+1,sc=GN*.82/Math.max(w,h),ox=(GN-w*sc)/2,oy=(GN-h*sc)/2,m=new Float32Array(GN*GN);
+  for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){if(d[(y*W+x)*4]>=160)continue;
+    const gx=Math.floor((x-x0)*sc+ox),gy=Math.floor((y-y0)*sc+oy);if(gx>=0&&gy>=0&&gx<GN&&gy<GN)m[gy*GN+gx]=1}
+  /* Topologie, calculée en pleine résolution : nombre de boucles fermées,
+     position et taille de la boucle. C'est ce qui sépare 8 de 6, 9 et 4. */
+  const N=W*H,vu=new Uint8Array(N),ink=k=>d[k*4]<160,st=[];
+  for(let x=0;x<W;x++){st.push(x,(H-1)*W+x)}
+  for(let y=0;y<H;y++){st.push(y*W,y*W+W-1)}
+  while(st.length){const k=st.pop();if(k<0||k>=N||vu[k]||ink(k))continue;vu[k]=1;
+    const x=k%W,y=(k-x)/W;
+    if(x>0)st.push(k-1);if(x<W-1)st.push(k+1);if(y>0)st.push(k-W);if(y<H-1)st.push(k+W)}
+  let holes=0,hy=0,ha=0;
+  for(let k=0;k<N;k++){if(vu[k]||ink(k))continue;
+    let sy=0,n=0;const q=[k];vu[k]=1;
+    while(q.length){const j=q.pop(),x=j%W,y=(j-x)/W;sy+=y;n++;
+      if(x>0&&!vu[j-1]&&!ink(j-1)){vu[j-1]=1;q.push(j-1)}
+      if(x<W-1&&!vu[j+1]&&!ink(j+1)){vu[j+1]=1;q.push(j+1)}
+      if(y>0&&!vu[j-W]&&!ink(j-W)){vu[j-W]=1;q.push(j-W)}
+      if(y<H-1&&!vu[j+W]&&!ink(j+W)){vu[j+W]=1;q.push(j+W)}}
+    if(n>=12){holes++;hy+=sy/n;ha=Math.max(ha,n)}}
+  hy=holes?(hy/holes-y0)/(y1-y0+1):0;ha=ha/((x1-x0+1)*(y1-y0+1));
+  const b=new Float32Array(GN*GN);  /* léger flou : tolère les écarts de tracé */
+  for(let y=0;y<GN;y++)for(let x=0;x<GN;x++){let v=0,n=0;
+    for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++){const a=x+i,c=y+j;if(a<0||c<0||a>=GN||c>=GN)continue;v+=m[c*GN+a]*(i||j?.55:1);n++}
+    b[y*GN+x]=v/n}
+  let s=0;for(let i=0;i<b.length;i++)s+=b[i]*b[i];s=Math.sqrt(s)||1;
+  for(let i=0;i<b.length;i++)b[i]/=s;
+  return {m:b,w,h,holes,hy,ha}}
+let TPL=null;
+function templates(){
+  if(TPL)return TPL;TPL=[];
+  const mk=(d,fn)=>{const c=document.createElement('canvas');c.width=c.height=72;const g=c.getContext('2d');
+    g.fillStyle='#fff';g.fillRect(0,0,72,72);g.fillStyle='#000';g.strokeStyle='#000';fn(g);
+    const b=inkMap(c);if(b)TPL.push({d,b})};
+  const fonts=['bold 56px Helvetica, Arial, sans-serif','56px Georgia, Times, serif','bold 56px Verdana, Geneva, sans-serif','56px Helvetica, Arial, sans-serif'];
+  for(let d=0;d<=9;d++)for(const f of fonts)mk(d,g=>{g.font=f;g.textAlign='center';g.textBaseline='middle';g.fillText(String(d),36,38)});
+  const pen=g=>{g.lineWidth=7;g.lineCap='round';g.lineJoin='round'};
+  mk(1,g=>{pen(g);g.beginPath();g.moveTo(36,10);g.lineTo(36,62);g.stroke()});
+  mk(1,g=>{pen(g);g.beginPath();g.moveTo(24,20);g.lineTo(36,10);g.lineTo(36,62);g.stroke()});
+  mk(7,g=>{pen(g);g.beginPath();g.moveTo(14,14);g.lineTo(56,14);g.lineTo(28,62);g.stroke()});
+  mk(7,g=>{pen(g);g.beginPath();g.moveTo(14,14);g.lineTo(56,14);g.lineTo(28,62);g.moveTo(20,40);g.lineTo(46,36);g.stroke()});
+  mk(4,g=>{pen(g);g.beginPath();g.moveTo(44,62);g.lineTo(44,10);g.lineTo(12,44);g.lineTo(58,44);g.stroke()});
+  mk(4,g=>{pen(g);g.beginPath();g.moveTo(16,10);g.lineTo(12,44);g.lineTo(56,44);g.moveTo(44,12);g.lineTo(44,62);g.stroke()});
+  mk(9,g=>{pen(g);g.beginPath();g.arc(32,26,15,0,7);g.moveTo(47,26);g.lineTo(42,62);g.stroke()});
+  mk(6,g=>{pen(g);g.beginPath();g.arc(34,44,16,0,7);g.moveTo(20,38);g.quadraticCurveTo(26,12,46,10);g.stroke()});
+  mk(0,g=>{pen(g);g.beginPath();g.ellipse(36,36,16,26,0,0,7);g.stroke()});
+  mk(5,g=>{pen(g);g.beginPath();g.moveTo(52,12);g.lineTo(20,12);g.lineTo(18,34);g.quadraticCurveTo(46,24,48,44);g.quadraticCurveTo(48,62,22,58);g.stroke()});
+  mk(2,g=>{pen(g);g.beginPath();g.moveTo(16,22);g.quadraticCurveTo(24,8,40,12);g.quadraticCurveTo(56,20,38,38);g.lineTo(14,62);g.lineTo(58,62);g.stroke()});
+  mk(3,g=>{pen(g);g.beginPath();g.moveTo(16,14);g.quadraticCurveTo(46,4,44,24);g.quadraticCurveTo(42,36,28,36);g.quadraticCurveTo(50,34,50,50);g.quadraticCurveTo(48,66,16,58);g.stroke()});
+  mk(8,g=>{pen(g);g.beginPath();g.arc(36,22,13,0,7);g.moveTo(36,35);g.arc(36,50,16,0,7);g.stroke()});
+  return TPL}
+function readDigit(strokes,wd){
+  const c=document.createElement('canvas');c.width=c.height=72;const g=c.getContext('2d');
+  g.fillStyle='#fff';g.fillRect(0,0,72,72);
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  for(const s of strokes)for(let i=0;i<s.length;i+=2){x0=Math.min(x0,s[i]);x1=Math.max(x1,s[i]);y0=Math.min(y0,s[i+1]);y1=Math.max(y1,s[i+1])}
+  const w=x1-x0||1,h=y1-y0||1,sc=52/Math.max(w,h),ox=36-(x0+x1)/2*sc,oy=36-(y0+y1)/2*sc;
+  g.strokeStyle='#000';g.lineWidth=Math.max(5,wd*sc);g.lineCap='round';g.lineJoin='round';
+  for(const s of strokes){g.beginPath();g.moveTo(s[0]*sc+ox,s[1]*sc+oy);
+    if(s.length<=2)g.lineTo(s[0]*sc+ox+.1,s[1]*sc+oy);
+    else for(let i=2;i<s.length;i+=2)g.lineTo(s[i]*sc+ox,s[i+1]*sc+oy);
+    g.stroke()}
+  const b=inkMap(c);if(!b)return null;
+  const ratio=w/h;let best=null;
+  const boucle={0:1,4:1,6:1,8:2,9:1};        /* boucles attendues par chiffre */
+  for(const t of templates()){let v=0;for(let i=0;i<b.m.length;i++)v+=b.m[i]*t.b.m[i];
+    if(t.d===1&&ratio>.38)v-=.28;              /* un 1 est étroit */
+    if(t.d!==1&&ratio<.28)v-=.10;
+    const att=boucle[t.d]||0;
+    if(b.holes>=2)v+=t.d===8?.22:-.22;
+    else if(b.holes===1){if(t.d===8)v-=.22;else if(att!==1&&t.d!==4)v-=.10;
+      if(b.ha>=.06){                            /* une vraie boucle, pas le triangle du 4 */
+        if(t.d===9)v+=b.hy<.46?.18:-.14;
+        if(t.d===6)v+=b.hy>.54?.18:-.14;
+        if(t.d===0)v+=Math.abs(b.hy-.5)<.12?.12:-.06;
+        if(t.d===4)v-=.12}
+      else if(t.d===4)v+=.14}
+    else if(att>0&&t.d!==4)v-=.14;
+    if(!best||v>best.v)best={d:t.d,v}}
+  return best}
+function splitDigits(strokes){
+  const items=strokes.map(p=>{let a=1e9,b=-1e9;for(let i=0;i<p.length;i+=2){a=Math.min(a,p[i]);b=Math.max(b,p[i])}return {p,a,b}})
+    .sort((x,y)=>x.a-y.a);
+  const gr=[];
+  for(const it of items){const g=gr[gr.length-1];
+    if(g&&Math.min(g.b,it.b)-Math.max(g.a,it.a)>-6){g.a=Math.min(g.a,it.a);g.b=Math.max(g.b,it.b);g.s.push(it.p)}
+    else gr.push({a:it.a,b:it.b,s:[it.p]})}
+  return gr}
+function openDigits(target){
+  const ov=document.createElement('div');ov.className='sk dg';
+  ov.innerHTML=`<div class="bar"><b style="font-size:15px">Écrivez la cote au stylet</b><span class="sp"></span>
+   <button class="btn sm" id="dg-undo">Effacer le dernier</button><button class="btn sm" id="dg-clear">Tout effacer</button>
+   <button class="btn sm" id="dg-close">Annuler</button><button class="btn sm pri" id="dg-ok">Valider</button></div>
+  <div class="dgout"><span class="muted">Écrivez les chiffres l'un à côté de l'autre, puis corrigez si besoin.</span><div class="dgnum" id="dgnum"></div></div>
+  <div class="wrap"><canvas id="dgc"></canvas></div>`;
+  document.body.appendChild(ov);
+  const cv=$('#dgc',ov),cx=cv.getContext('2d');
+  let strokes=[],cur=null,pid=null,penT=0,res=[];
+  const fit=()=>{const r=cv.parentElement.getBoundingClientRect();cv.width=Math.round(r.width-16);cv.height=Math.max(200,Math.round(r.height-16));redraw()};
+  const redraw=()=>{cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);
+    cx.strokeStyle='#E3E5EF';cx.lineWidth=1;cx.beginPath();cx.moveTo(0,cv.height*.78);cx.lineTo(cv.width,cv.height*.78);cx.stroke();
+    cx.strokeStyle='#1B2036';cx.lineCap='round';cx.lineJoin='round';cx.lineWidth=5;
+    for(const s of strokes){cx.beginPath();cx.moveTo(s[0],s[1]);for(let i=2;i<s.length;i+=2)cx.lineTo(s[i],s[i+1]);cx.stroke()}};
+  const reco=()=>{res=splitDigits(strokes).map(g=>{const r=readDigit(g.s,5);return r?r.d:null}).filter(d=>d!==null);
+    $('#dgnum',ov).innerHTML=res.length?res.map((d,i)=>`<button class="dgd" data-i="${i}">${d}</button>`).join(''):'<span class="muted">—</span>'};
+  const pt=e=>{const r=cv.getBoundingClientRect();return [(e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height]};
+  cv.addEventListener('pointerdown',e=>{if(e.pointerType==='pen')penT=Date.now();else if(e.pointerType==='touch'&&Date.now()-penT<1500)return;
+    if(cur)return;e.preventDefault();cv.setPointerCapture(e.pointerId);pid=e.pointerId;cur=pt(e);strokes.push(cur);redraw()});
+  cv.addEventListener('pointermove',e=>{if(!cur||e.pointerId!==pid)return;e.preventDefault();const [x,y]=pt(e);
+    cx.strokeStyle='#1B2036';cx.lineWidth=5;cx.lineCap='round';cx.beginPath();cx.moveTo(cur[cur.length-2],cur[cur.length-1]);cx.lineTo(x,y);cx.stroke();cur.push(x,y)});
+  const end=e=>{if(e&&e.pointerId!==pid)return;if(cur){cur=null;pid=null;reco()}};
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  ov.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.i!==undefined){const k=await choose('Quel chiffre ?',[...Array(10)].map((_,n)=>({l:String(n),n})).concat([{l:'Supprimer ce chiffre',del:1}]));
+      if(!k)return;if(k.del)res.splice(+b.dataset.i,1);else res[+b.dataset.i]=k.n;
+      $('#dgnum',ov).innerHTML=res.map((d,i)=>`<button class="dgd" data-i="${i}">${d}</button>`).join('');return}
+    if(b.id==='dg-undo'){strokes.pop();redraw();reco()}
+    else if(b.id==='dg-clear'){strokes=[];redraw();reco()}
+    else if(b.id==='dg-close')ov.remove();
+    else if(b.id==='dg-ok'){const v=res.join('');ov.remove();
+      if(v&&target&&target.isConnected){target.value=v;target.dispatchEvent(new Event('input',{bubbles:true}));target.focus()}
+      else if(v)toast('Champ introuvable : la cote n\'a pas été reportée')}});
+  fit();addEventListener('resize',fit,{once:true});
+}
 /* ---------- Dialogues ---------- */
 function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3200)}
 function ask(msg,ok='Confirmer',danger){return new Promise(res=>{const o=document.createElement('div');o.className='ov';o.innerHTML=`<div class="dlg" role="dialog"><p>${esc(msg)}</p><div class="acts"><button class="btn" data-r="0">Annuler</button><button class="btn ${danger?'dng':'pri'}" data-r="1">${esc(ok)}</button></div></div>`;o.onclick=e=>{const b=e.target.closest('button');if(b||e.target===o){o.remove();res(!!b&&b.dataset.r==='1')}};document.body.appendChild(o)})}
@@ -594,9 +838,10 @@ let NF={};
 function homeView(){
   const q=(V.q||'').toLowerCase();
   const list=S.chantiers.filter(c=>{const cl=clById(c.clientId)||{};return !q||(cl.nom+' '+c.adresse+' '+c.ville).toLowerCase().includes(q)}).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-  return `<div class="top"><div class="brand">fermapro<i>.</i><small>Relevé de cotes</small></div><span class="sp"></span><button class="btn sm" data-act="staff">Équipe</button><button class="btn sm" data-act="import">Importer une sauvegarde</button><button class="btn pri" data-act="newjob">Nouveau chantier</button></div>
+  return `<div class="top"><div class="brand">fermapro<i>.</i><small>Relevé de cotes</small></div><span class="sp"></span><button class="btn sm" data-act="staff">Équipe</button><button class="btn sm" data-act="cfg">Sauvegarde auto</button><button class="btn sm" data-act="import">Importer une sauvegarde</button><button class="btn pri" data-act="newjob">Nouveau chantier</button></div>
   ${hintHTML()}
   ${(()=>{const d=dirtyJobs();return d.length?`<div class="card alert warn"><div><b>${d.length} chantier${d.length>1?'s':''} non sauvegardé${d.length>1?'s':''} hors de la tablette</b><p class="muted" style="margin:4px 0 0;font-size:14px">En cas de perte, de panne ou de réinitialisation de l'iPad, ces relevés seraient perdus.</p></div><button class="btn pri" data-act="exportall">Tout sauvegarder</button></div>`:''})()}
+  ${cfg().url?`<p class="muted" style="margin:10px 0 0;font-size:14px">Sauvegarde automatique : <b>${esc(syncEtat())}</b> · <button class="btn sm" data-act="cfg">Réglages</button></p>`:''}
   ${S.chantiers.length?`<input class="search" id="q" type="search" placeholder="Rechercher un client ou une adresse" value="${esc(V.q||'')}">
   <div class="list">${list.map(c=>{const cl=clById(c.clientId)||{nom:'Client'},n=c.pieces.reduce((a,r)=>a+r.produits.length,0),m=allMissing(c).length;
    return `<button class="job" data-act="open" data-id="${c.id}"><b>${esc(cl.nom)}${c.demo?' <span class="tag">Exemple</span>':''}${c.dup?' <span class="tag">Import en double</span>':''}</b><span>${fmtDate(c.date)}</span><span>${esc(c.adresse)}, ${esc(c.cp)} ${esc(c.ville)}</span><span>${n} produit${n>1?'s':''} · ${c.pieces.length} pièce${c.pieces.length>1?'s':''}</span>
@@ -687,7 +932,8 @@ function prodView(){
   <div class="card" style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" data-act="dup">Dupliquer ce produit</button><button class="btn" data-act="dupto">Dupliquer dans une autre pièce</button><button class="btn" data-act="moveprod">Déplacer vers une autre pièce</button><button class="btn" data-act="editrep">Changer le repère</button><button class="btn dng" data-act="delprod">Supprimer</button></div>
   <div class="sticky"><div><span class="saved" id="saved">Enregistré sur cette tablette</span><span class="sp"></span><button class="btn pri" data-act="prodDone">Terminé</button></div></div>`;
 }
-function fmtVal(f,v){if(f.t==='yn')return v===true?'Oui':String(v||'');if(f.t==='check')return v?'Oui':'';if(Array.isArray(v))return v.join(', ');return String(v||'')}
+function fmtVal(f,v){if(f.t==='yn')return v===true?'Oui':String(v||'');if(f.t==='check')return v?'Oui':'';
+  if(Array.isArray(v))return f.ord?v.map((x,i)=>`${i+1}. ${x}`).join('  ·  '):v.join(', ');return String(v||'')}
 function defsView(){
   const c=curCh();c.defs=c.defs||{};
   return `<div class="top"><button class="back" data-act="job">‹ Chantier</button></div><h1 style="margin-bottom:6px">Valeurs communes du chantier</h1>
@@ -839,10 +1085,11 @@ const mmInputs=()=>[...app.querySelectorAll('input[data-t="mm"]')];
 function kbBar(){
   if(KB)return KB;
   KB=document.createElement('div');KB.className='kbb';
-  KB.innerHTML=`<button class="btn sm" data-kb="prev">‹ Précédent</button><button class="btn sm" data-kb="next">Suivant ›</button><span class="sp"></span><button class="btn sm pri" data-kb="done">Terminé</button>`;
+  KB.innerHTML=`<button class="btn sm" data-kb="prev">‹ Précédent</button><button class="btn sm" data-kb="next">Suivant ›</button><button class="btn sm" data-kb="pen">✎ Écrire la cote</button><span class="sp"></span><button class="btn sm pri" data-kb="done">Terminé</button>`;
   KB.addEventListener('pointerdown',e=>e.preventDefault());
   KB.addEventListener('click',e=>{const b=e.target.closest('[data-kb]');if(!b)return;
     const k=b.dataset.kb,a=document.activeElement;
+    if(k==='pen'){const t=isMM(a)?a:mmInputs()[0];kbHide();if(t)openDigits(t);return}
     if(k==='done'){if(a&&a.blur)a.blur();kbHide();return}
     const l=mmInputs(),i=l.indexOf(a),n=l[i+(k==='next'?1:-1)];
     if(n){n.focus();n.scrollIntoView({block:'center'})}});
@@ -858,10 +1105,87 @@ document.addEventListener('focusin',e=>{if(!isMM(e.target))return;kbShow();
 document.addEventListener('focusout',()=>{setTimeout(()=>{if(!isMM(document.activeElement))kbHide()},150)});
 if(window.visualViewport){visualViewport.addEventListener('resize',kbPos);visualViewport.addEventListener('scroll',kbPos)}
 
+/* ---------- Sauvegarde automatique vers un espace partagé ---------- */
+const cfg=()=>(S.cfg=S.cfg||{url:'',cle:'',auto:false,media:true});
+let SYNC={on:false,t:null,last:null};
+const pendings=()=>cfg().auto?dirtyJobs():[];
+async function payload(c){
+  const cl=clById(c.clientId);
+  return {fermaproReleve:1,envoi:new Date().toISOString(),appareil:S.appareil||'',client:cl,chantier:c,
+    media:cfg().media?await jobMedia(c):{}}}
+async function sendJob(c){
+  const o=cfg();if(!o.url)throw new Error('Aucune adresse de dépôt');
+  const body=JSON.stringify(Object.assign(await payload(c),o.cle?{cle:o.cle}:{}));
+  const r=await fetch(o.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body});
+  if(!r.ok)throw new Error('Réponse '+r.status);
+  const t=(await r.text()).slice(0,200);
+  if(/"ok"\s*:\s*false|erreur|error/i.test(t))throw new Error(t||'Refusé par le serveur');
+  return t}
+async function syncNow(manuel){
+  const o=cfg();
+  if(SYNC.on)return;
+  if(!o.url){if(manuel)toast("Indiquez d'abord l'adresse de dépôt");return}
+  if(!navigator.onLine){if(manuel)toast('Pas de connexion : la sauvegarde partira dès le retour du réseau');return}
+  const list=manuel?dirtyJobs():pendings();
+  if(!list.length){if(manuel)toast('Tout est déjà sauvegardé');return}
+  SYNC.on=true;if(V.name==='cfg'||V.name==='home')render();
+  let ok=0,err=null;
+  for(const c of list){
+    try{await sendJob(c);c.exp=Date.now();delete c.syncErr;ok++}
+    catch(e){err=e.message||'envoi impossible';c.syncErr=err}}
+  SYNC.on=false;SYNC.last={t:Date.now(),ok,err};save(true);
+  if(manuel)toast(err?'Envoi incomplet : '+err:`${ok} chantier${ok>1?'s':''} envoyé${ok>1?'s':''}`);
+  render()}
+function syncSoon(){const o=cfg();if(!o.auto||!o.url)return;clearTimeout(SYNC.t);SYNC.t=setTimeout(()=>syncNow(false),30000)}
+addEventListener('online',()=>{if(cfg().auto)syncNow(false)});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&cfg().auto)syncNow(false)});
+const syncEtat=()=>{const o=cfg();if(!o.url)return 'Non configurée';
+  if(!o.auto)return 'Configurée, envoi manuel';
+  if(SYNC.on)return 'Envoi en cours…';
+  const n=pendings().length,e=S.chantiers.find(c=>c.syncErr);
+  if(e)return 'Dernière tentative en échec : '+e.syncErr;
+  return n?`${n} chantier${n>1?'s':''} en attente`:'À jour'+(SYNC.last?` · dernier envoi ${stamp(SYNC.last.t)}`:'')};
+function cfgView(){
+  const o=cfg();
+  return `<div class="top"><button class="back" data-act="home">‹ Chantiers</button></div><h1 style="margin-bottom:6px">Sauvegarde automatique</h1>
+  <p class="muted" style="margin:0 0 14px">Chaque chantier modifié est envoyé à l'espace partagé de l'entreprise, sans rien faire sur la tablette. Si le réseau manque, l'envoi repart tout seul au retour de la connexion.</p>
+  <section class="card"><h2>État</h2><p style="margin:0"><b>${esc(syncEtat())}</b></p>
+   <div class="chips" style="margin-top:12px"><button class="btn" data-act="synctest">Tester l'adresse</button><button class="btn pri" data-act="syncnow">Envoyer maintenant</button></div></section>
+  <section class="card"><h2>Réglages</h2>
+   <label class="fld"><span class="l">Adresse de dépôt</span><input class="txt" type="url" data-cfg="url" value="${esc(o.url)}" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off"></label>
+   <label class="fld"><span class="l">Clé de sécurité (facultative)</span><input class="txt" data-cfg="cle" value="${esc(o.cle)}" autocomplete="off"></label>
+   <button type="button" class="tog${o.auto?' on':''}" data-act="cfgtog" data-k="auto"><i></i><span>Envoyer automatiquement à chaque modification</span></button>
+   <button type="button" class="tog${o.media?' on':''}" data-act="cfgtog" data-k="media"><i></i><span>Inclure les photos, croquis et notes vocales</span></button>
+   <label class="fld" style="margin-top:14px"><span class="l">Nom de cette tablette</span><input class="txt" data-cfg="appareil" value="${esc(S.appareil||'')}" placeholder="iPad Allan"></label>
+  </section>
+  <section class="card"><h2>Ce qu'il faut à l'autre bout</h2>
+   <p class="muted" style="margin:0 0 8px;font-size:14px">L'adresse doit accepter une requête POST contenant le chantier au format JSON et répondre <b>{"ok":true}</b>. Un script Google Apps Script déposé sur le Drive de l'entreprise suffit : demandez-le, il est fourni avec l'application.</p>
+   <p class="muted" style="margin:0;font-size:14px">Sans adresse, rien n'est envoyé : la sauvegarde reste manuelle, par le bouton Sauvegarde du chantier.</p></section>
+  <div class="sticky"><div><span class="saved" id="saved">Enregistré sur cette tablette</span><span class="sp"></span><button class="btn pri" data-act="home">Terminé</button></div></div>`;
+}
+/* Classement par glisser-déposer, au doigt comme au stylet. */
+let ORD=null;
+document.addEventListener('pointerdown',e=>{
+  const h=e.target.closest('.ordl .h');if(!h)return;
+  const it=h.closest('.ordi'),li=it.parentElement;e.preventDefault();
+  try{h.setPointerCapture(e.pointerId)}catch(err){}
+  ORD={it,li,id:e.pointerId};it.classList.add('drag')});
+document.addEventListener('pointermove',e=>{
+  if(!ORD||e.pointerId!==ORD.id)return;e.preventDefault();
+  const y=e.clientY,items=[...ORD.li.children].filter(x=>x!==ORD.it);
+  for(const o of items){const r=o.getBoundingClientRect(),m=r.top+r.height/2;
+    if(y<m&&o.compareDocumentPosition(ORD.it)&Node.DOCUMENT_POSITION_FOLLOWING){ORD.li.insertBefore(ORD.it,o);break}
+    if(y>m&&o.compareDocumentPosition(ORD.it)&Node.DOCUMENT_POSITION_PRECEDING){ORD.li.insertBefore(ORD.it,o.nextSibling);break}}});
+const ordEnd=e=>{if(!ORD||(e&&e.pointerId!==ORD.id))return;
+  const k=ORD.li.dataset.k,a=[...ORD.li.children].map(x=>x.dataset.v);
+  ORD.it.classList.remove('drag');ORD=null;
+  const d=curData();if(d&&JSON.stringify(d[k])!==JSON.stringify(a)){d[k]=a;save()}render()};
+document.addEventListener('pointerup',ordEnd);document.addEventListener('pointercancel',ordEnd);
+
 /* ---------- Rendu et événements ---------- */
 function render(keepScroll=true){
   const y=keepScroll?scrollY:0;
-  app.innerHTML=({home:homeView,new:newView,job:jobView,info:infoView,dec:decView,prod:prodView,synth:synthView,defs:defsView}[V.name])();
+  app.innerHTML=({home:homeView,new:newView,job:jobView,info:infoView,dec:decView,prod:prodView,synth:synthView,defs:defsView,cfg:cfgView}[V.name])();
   hydrate();scrollTo(0,y);secSpy();
 }
 function go(v){kbHide();V=v;render(false)}
@@ -908,6 +1232,9 @@ document.addEventListener('input',e=>{const t=e.target;
   save();const s=$('#saved');if(s)s.textContent='Enregistrement…';
   if(V.name==='prod'||V.name==='dec'||V.name==='defs'){const sib=app.querySelectorAll(`.chips [data-k="${t.dataset.k}"][data-act="chip"]`);sib.forEach(b=>b.classList.toggle('on',b.dataset.v===v))}
 });
+document.addEventListener('input',e=>{const t=e.target;if(!t.dataset||!t.dataset.cfg)return;
+  if(t.dataset.cfg==='appareil')S.appareil=t.value.trim();else cfg()[t.dataset.cfg]=t.value.trim();
+  save(true);const sv=$('#saved');if(sv)sv.textContent='Enregistrement…'});
 document.addEventListener('change',e=>{const t=e.target;
   if(t.dataset&&t.dataset.cpar){curCh().par=t.value;save();return}
   if(t.id==='cl-pick'){NF.clientId=t.value||'';render();return}
@@ -972,7 +1299,7 @@ document.addEventListener('click',async e=>{
    case 'rec':toggleRec();break;
    case 'newsk':openSketch(curHolder());break;
    case 'editsk':openSketch(curHolder(),id);break;
-   case 'annot':{const m=await getMedia(id);if(m)openSketch(curHolder(),null,m.data);break}
+   case 'annot':{const m=await getMedia(id);if(m)openSketch(curHolder(),null,m.data,id);break}
    case 'delmedia':if(await ask('Supprimer ce média ?','Supprimer',true))delMedia(curHolder(),id);break;
    case 'synth':go({name:'synth',chId:V.chId});break;
    case 'pdf':{toast('Création du PDF…');try{const bytes=await buildSynthPDF(c),cl=clById(c.clientId);await shareOrSave(new Blob([bytes],{type:'application/pdf'}),`releve-${slug(cl&&cl.nom)}-${c.date}.pdf`,'application/pdf')}catch(e){toast('Le PDF n\'a pas pu être créé')}break}
@@ -983,9 +1310,21 @@ document.addEventListener('click',async e=>{
    case 'deljob':if(await ask('Supprimer ce chantier et tous ses médias ? Cette action est définitive.','Supprimer',true)){for(const r of c.pieces)for(const p of r.produits)for(const m of p.med||[])await idbDel('media',m);for(const m of c.dec.med||[])await idbDel('media',m);S.chantiers=S.chantiers.filter(x=>x!==c);save();go({name:'home'})}break;
    case 'exportjob':exportJob(c);break;
    case 'exportall':exportAll();break;
+   case 'cfg':go({name:'cfg'});break;
+   case 'ordmv':{const d=curData(),k=b.dataset.k,a=(d[k]||[]).slice(),i=a.indexOf(b.dataset.v),j=i+(+b.dataset.d);
+     if(i<0||j<0||j>=a.length)break;a.splice(j,0,a.splice(i,1)[0]);d[k]=a;save();render();break}
+   case 'cfgtog':{const o=cfg();o[b.dataset.k]=!o[b.dataset.k];save(true);render();if(o.auto&&o.url)syncNow(false);break}
+   case 'syncnow':syncNow(true);break;
+   case 'synctest':{const o=cfg();if(!o.url){toast("Indiquez d'abord l'adresse de dépôt");break}
+     toast('Test en cours…');
+     try{const r=await fetch(o.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fermaproReleve:1,test:true,cle:o.cle||''})});
+       toast(r.ok?'Adresse joignable, réponse '+r.status:'Réponse '+r.status+' : vérifiez le partage du script')}
+     catch(e){toast("Adresse injoignable : vérifiez l'URL et la connexion")}break}
    case 'fold':JV.col[id]=!JV.col[id];render();break;
    case 'foldall':{const t=!c.pieces.every(r=>JV.col[r.id]);for(const r of c.pieces)JV.col[r.id]=t;render();break}
    case 'filt':JV.filt=JV.filt===id?'':id;render();break;
+   case 'other':{V.other=V.other||{};V.other[b.dataset.k]=1;render();const i=app.querySelector(`input[data-k="${b.dataset.k}"]`);if(i)i.focus();break}
+   case 'more':{V.more=V.more||{};V.more[id]=!V.more[id];render();break}
    case 'gosec':{const t=document.getElementById(id);if(t)scrollTo({top:Math.max(0,t.offsetTop-64),behavior:'smooth'});break}
    case 'gomiss':{const t=app.querySelector('.fld.miss');if(t){t.scrollIntoView({block:'center',behavior:'smooth'});const i=t.querySelector('input,textarea,select');if(i&&i.dataset.t==='mm')setTimeout(()=>i.focus(),320)}break}
    case 'import':importJob();break;
