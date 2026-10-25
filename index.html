@@ -145,6 +145,8 @@ textarea.txt{min-height:84px;resize:vertical}
 .dlg .acts{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 .toast.act{display:flex;align-items:center;gap:14px}
 .toast.act .btn{background:transparent;color:#fff;border-color:rgba(255,255,255,.5);min-height:36px}
+.fld.vdiff,.tog.vdiff{border-left:3px solid var(--primary);padding-left:9px}
+.vdiff .l::after{content:' \00b7  modifi\00e9 ';color:var(--primary);font-weight:700}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom,0px));background:var(--primary);color:var(--on-primary);padding:10px 16px;border-radius:99px;z-index:60;font-weight:650;max-width:90vw;text-align:center}
 .sk{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
 .sk .sep{width:1px;height:28px;background:var(--line)}
@@ -449,7 +451,10 @@ const clById=id=>S.clients.find(c=>c.id===id);
 let V={name:'home'};
 const curCh=()=>chById(V.chId);
 function curProd(){const c=curCh();if(!c)return null;for(const r of c.pieces){const p=r.produits.find(x=>x.id===V.pid);if(p)return {p,r}}return null}
-const curData=()=>V.name==='prod'?curProd().p.d:V.name==='dec'?curCh().dec:V.name==='new'?NF:V.name==='info'?curCh():V.name==='defs'?(curCh().defs=curCh().defs||{}):{};
+function curVar(){const x=curProd();if(!x)return null;const l=vlist(x.p),v=l.find(y=>y.id===V.vid);
+  return v?{p:x.p,r:x.r,v,i:l.indexOf(v)}:null}
+function varData(){const x=curVar();if(!x)return {};x.v.d=x.v.d||{};return vdView(x.p.d,x.v.d)}
+const curData=()=>V.name==='var'?varData():V.name==='prod'?curProd().p.d:V.name==='dec'?curCh().dec:V.name==='new'?NF:V.name==='info'?curCh():V.name==='defs'?(curCh().defs=curCh().defs||{}):{};
 const curHolder=()=>V.name==='prod'?curProd().p:V.name==='dec'?curCh().dec:null;
 const kindLabel=p=>p.kind==='fenetre'?(hasT(p.d,'Porte-fenêtre')?'Porte-fenêtre':'Fenêtre'):p.kind==='autre'?(p.d.nom||'Autre produit'):T[p.kind].label;
 const visible=(f,d)=>!f.if||f.if(d);
@@ -513,6 +518,28 @@ function migrate(){for(const c of S.chantiers)for(const r of c.pieces)for(const 
 function hintHTML(){let st=false;try{st=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone}catch(e){}
   return (st||S.noHint)?'':`<div class="card"><b>Installez l'application sur l'écran d'accueil</b><p class="muted" style="margin:6px 0 10px">Sans cela, la tablette peut effacer les relevés après quelques jours sans ouverture. Sur iPad : bouton Partager, puis « Sur l'écran d'accueil ».</p><button class="btn sm" data-act="hint">C'est fait</button></div>`}
 const qte=p=>Math.max(1,parseInt(p.d.qte)||1);
+const vlist=p=>Array.isArray(p.var)?p.var:[];
+const vLab=i=>String.fromCharCode(65+i);
+const vNom=(v,i)=>`Variante ${vLab(i)}`+(v&&v.nom?` \u2014 ${v.nom}`:'');
+const vMention=p=>{const n=vlist(p).length;return n?`${n} variante${n>1?'s':''}`:''};
+const coteSec=s=>/^Cotes/.test(s.t)||s.t==='Relev\u00e9 en 3 points';
+const varSecs=p=>T[p.kind].s.filter(s=>!coteSec(s)).map(s=>({t:s.t,f:s.f.filter(f=>!['info','eq'].includes(f.t))})).filter(s=>s.f.length);
+const vnorm=x=>x===true?'Oui':(x===false||x==null)?'':x;
+const veq=(a,b)=>JSON.stringify(vnorm(a))===JSON.stringify(vnorm(b));
+/* Vue d'une variante : lit le produit de base, n'\u00e9crit que ce qui diff\u00e8re. */
+function vdView(base,ov){const t=Object.assign({},base,ov);
+  return new Proxy(t,{
+    set(o,k,v){if(veq(v,base[k]))delete ov[k];else ov[k]=v;o[k]=v;return true},
+    deleteProperty(o,k){delete ov[k];delete o[k];return true}})}
+function varDiff(p,v){const out=[],ov=(v&&v.d)||{},m=Object.assign({},p.d,ov);
+  for(const s of varSecs(p))for(const f of s.f){
+    if(!(f.k in ov))continue;
+    if(!visible(f,m)&&!visible(f,p.d))continue;
+    const bv=fmtVal(f,p.d[f.k]),vv=fmtVal(f,ov[f.k]);if(bv===vv)continue;
+    const u=f.t==='mm'?' mm':'';
+    out.push({k:f.k,l:f.l,b:bv?bv+u:'',v:vv?vv+u:''})}
+  return out}
+const varLigne=(p,v)=>{const d=varDiff(p,v);return d.length?d.map(o=>`${o.l} : ${o.v||'\u2014'}`).join(' \u00b7 '):'aucune diff\u00e9rence not\u00e9e'};
 function summary(p){const d=p.d,b=[kindLabel(p)];if(d.materiau&&p.kind!=='autre')b.push(d.materiau);const dim=[d.hauteur,d.largeur].filter(Boolean);return (qte(p)>1?qte(p)+' × ':'')+b.join(' ')+(dim.length===2?` · ${d.hauteur} × ${d.largeur} mm`:'')}
 
 /* ---------- Champs ---------- */
@@ -915,7 +942,7 @@ function jobView(){
   ${c.pieces.map(r=>{const vis=r.produits.filter(p=>showProd(c,p)),col=JV.col[r.id]&&!JV.q&&!JV.filt;
    if((JV.q||JV.filt)&&!vis.length)return'';
    return `<section class="card room"><div class="room-h"><button class="fold" data-act="fold" data-id="${r.id}" aria-expanded="${col?'false':'true'}"><i>${col?'▸':'▾'}</i><h3>${esc(r.nom)}</h3><span class="tag">${r.produits.length}</span></button><button class="btn sm" data-act="renroom" data-id="${r.id}">Renommer</button></div>
-   ${col?'':`${vis.map(p=>`<button class="prod" data-act="prod" data-id="${p.id}"><span class="rep">${esc(p.rep)}</span><span><b>${esc(summary(p))}</b><small>${esc(note(p,c))}</small></span><span class="muted">›</span></button>`).join('')}
+   ${col?'':`${vis.map(p=>`<button class="prod" data-act="prod" data-id="${p.id}"><span class="rep">${esc(p.rep)}</span><span><b>${esc(summary(p))}</b><small>${esc([note(p,c),vMention(p)].filter(Boolean).join(' \u00b7 '))}</small></span><span class="muted">›</span></button>`).join('')}
    <button class="btn" data-act="addprod" data-id="${r.id}">+ Produit dans cette pièce</button>
    <div style="margin-top:12px;text-align:right"><button class="btn sm dng" data-act="delroom" data-id="${r.id}">Supprimer la pièce ${esc(r.nom)}</button></div>`}</section>`}).join('')}
   ${(JV.q||JV.filt)&&!c.pieces.some(r=>r.produits.some(p=>showProd(c,p)))?'<p class="muted">Aucun produit ne correspond.</p>':''}
@@ -958,9 +985,34 @@ function prodView(){
   <div class="secs">${tp.s.map((s,i)=>sectionHTML(s,p.d,true,'sec'+i)).join('')}${mediaHTML(p,'secmed')}</div>
   ${(()=>{const acts=tp.s.flatMap(s=>s.f).filter(f=>f.t==='act'&&visible(f,p.d));
     return acts.length?`<section class="card"><h2>Produits associés</h2><p class="muted" style="margin:0 0 10px;font-size:14px">Créé dans la même pièce, cotes et couleur reprises.</p><div class="chips">${acts.map(f=>`<button type="button" class="btn" data-act="${f.act}" data-kind="${f.kind||''}" data-fk="${f.k}">+ ${esc(f.l.replace(/^Ajouter (un|une) /,'').replace(/ associée?$/,'').replace(/^./,x=>x.toUpperCase()))}</button>${p.d[f.k]?` <span class="tag ok">${esc(p.d[f.k])}</span>`:''}`).join('')}</div></section>`:''})()}
+  ${(()=>{const vs=vlist(p);
+    return `<section class="card"><h2>Variantes \u00e0 chiffrer</h2>
+    <p class="muted" style="margin:0 0 10px;font-size:14px">M\u00eame ouverture, m\u00eames cotes, chiffr\u00e9e autrement : en aluminium, en triple vitrage, avec volet\u2026 Pour une menuiserie suppl\u00e9mentaire, utilisez plut\u00f4t \u00ab Dupliquer ce produit \u00bb.</p>
+    ${vs.map((v,i)=>`<button class="prod" data-act="editvar" data-id="${v.id}"><span class="rep">${vLab(i)}</span><span><b>${esc(vNom(v,i))}</b><small>${esc(varLigne(p,v))}</small></span><span class="muted">\u203a</span></button>`).join('')}
+    <button class="btn" data-act="addvar">+ Ajouter une variante</button></section>`})()}
   <div class="card" style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" data-act="dup">Dupliquer ce produit</button><button class="btn" data-act="dupto">Dupliquer dans une autre pièce</button><button class="btn" data-act="moveprod">Déplacer vers une autre pièce</button><button class="btn" data-act="editrep">Changer le repère</button><button class="btn dng" data-act="delprod">Supprimer</button></div>
   <div class="sticky"><div><span class="saved" id="saved">Enregistré sur cette tablette</span><span class="sp"></span><button class="btn pri" data-act="prodDone">Terminé</button></div></div>`;
 }
+function varView(){
+  const x=curVar();
+  if(!x){V={name:'prod',chId:V.chId,pid:V.pid};return prodView()}
+  const {p,r,v,i}=x,d=varData(),df=varDiff(p,v),secs=varSecs(p);
+  return `<div class="top"><button class="back" data-act="prod" data-id="${p.id}">\u2039 ${esc(p.rep)}</button><span class="sp"></span><span class="rep">Variante ${vLab(i)}</span></div>
+  <h1 style="margin-bottom:6px">Variante ${vLab(i)} de ${esc(p.rep)}</h1>
+  <p class="muted" style="margin:0 0 14px">${esc(kindLabel(p))}${p.d.hauteur&&p.d.largeur?` \u00b7 ${esc(p.d.hauteur)} \u00d7 ${esc(p.d.largeur)} mm`:''} \u00b7 ${esc(r.nom)}</p>
+  <section class="card"><label class="fld"><span class="l">Nom de la variante (ce que le client a demand\u00e9)</span><input class="txt" data-vnom="1" value="${esc(v.nom||'')}" placeholder="Aluminium triple vitrage"></label></section>
+  <section class="card"><h2>Diff\u00e9rences avec ${esc(p.rep)}</h2>
+   <p class="muted" style="margin:0 0 10px;font-size:14px">Les cotes, la quantit\u00e9 et les photos sont celles de ${esc(p.rep)}. Ne touchez ci-dessous qu'\u00e0 ce qui change : tout le reste est repris automatiquement, et suivra les corrections faites sur ${esc(p.rep)}.</p>
+   ${df.length?df.map(o=>`<div class="prod" style="margin-bottom:8px"><span><b>${esc(o.l)} : ${esc(o.v||'\u2014')}</b><small>sur ${esc(p.rep)} : ${esc(o.b||'non renseign\u00e9')}</small></span><span class="sp"></span><button class="btn sm" data-act="varreset" data-k="${esc(o.k)}">Revenir \u00e0 ${esc(p.rep)}</button></div>`).join('')
+   :`<p class="muted" style="margin:0">Aucune diff\u00e9rence not\u00e9e pour l'instant.</p>`}</section>
+  <nav class="secnav">${secs.map((s,j)=>`<button data-act="gosec" data-id="vsec${j}">${esc(secShort(s.t))}</button>`).join('')}</nav>
+  <div class="secs">${secs.map((s,j)=>sectionHTML(s,d,false,'vsec'+j)).join('')}</div>
+  <div class="card" style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn dng" data-act="delvar">Supprimer cette variante</button></div>
+  <div class="sticky"><div><span class="saved" id="saved">Enregistr\u00e9 sur cette tablette</span><span class="sp"></span><button class="btn pri" data-act="prod" data-id="${p.id}">Termin\u00e9</button></div></div>`;
+}
+function markVar(){const x=curVar();if(!x)return;
+  for(const o of varDiff(x.p,x.v)){const el=app.querySelector(`.secs [data-k="${o.k}"]`);
+    const w=el&&(el.closest('.fld')||el.closest('.tog'));if(w)w.classList.add('vdiff')}}
 function fmtVal(f,v){if(f.t==='yn')return v===true?'Oui':String(v||'');if(f.t==='check')return v?'Oui':'';
   if(Array.isArray(v))return f.ord?v.map((x,i)=>`${i+1}. ${x}`).join('  ·  '):v.join(', ');return String(v||'')}
 function defsView(){
@@ -1014,7 +1066,11 @@ function synthModel(c){
       if(p.d.notes)it.push({t:'p',x:'Notes : '+p.d.notes});
       const na=(p.med||[]).filter(i=>(p.mk||{})[i]==='audio').length;
       if(na)it.push({t:'p',x:`${na} note(s) vocale(s) enregistrée(s) dans l'application.`,muted:1});
-      const im=nonAudio(p);if(im.length)it.push({t:'imgs',ids:im})}}
+      const im=nonAudio(p);if(im.length)it.push({t:'imgs',ids:im});
+      if(vlist(p).length)it.push({t:'p',x:'Variantes demand\u00e9es par le client, \u00e0 chiffrer en option du produit ci-dessus. Cotes identiques.',muted:1});
+      vlist(p).forEach((v,i)=>{const df=varDiff(p,v);it.push({t:'h3',x:vNom(v,i)});
+        it.push(df.length?{t:'rows',r:df.map(o=>[o.l,`${o.v||'\u2014'} (au lieu de ${o.b||'non renseign\u00e9'})`])}
+         :{t:'p',x:'Aucune diff\u00e9rence not\u00e9e.',muted:1})})}}
   return it}
 async function buildSynthPDF(c){
   const cl=clById(c.clientId)||{nom:''},m=synthModel(c);
@@ -1078,7 +1134,8 @@ const jobMedia=async c=>{const ids=[...(c.dec.med||[]),...c.pieces.flatMap(r=>r.
 function csvJob(c){
   const cl=clById(c.clientId)||{nom:''},lignes=[],cols=[];
   const add=l=>{if(!cols.includes(l))cols.push(l)};
-  const base=['Pièce','Repère','Produit','Quantité'];base.forEach(add);
+  const base=['Pi\u00e8ce','Rep\u00e8re','Produit','Quantit\u00e9'];base.forEach(add);
+  if(c.pieces.some(r=>r.produits.some(p=>vlist(p).length)))add('Variante');
   const data=[];
   for(const r of c.pieces)for(const p of r.produits){
     const o={'Pièce':r.nom,'Repère':p.rep,'Produit':kindLabel(p),'Quantité':qte(p)};
@@ -1086,7 +1143,13 @@ function csvJob(c){
       if(['act','eq','colbtn','info'].includes(f.t)||!visible(f,p.d))continue;
       const v=fmtVal(f,p.d[f.k]);if(!v)continue;add(f.l);o[f.l]=v+(f.t==='mm'?' mm':'')}
     if(p.d.notes){add('Notes');o['Notes']=p.d.notes}
-    data.push(o)}
+    data.push(o);
+    vlist(p).forEach((v,i)=>{const m=Object.assign({},p.d,v.d||{});
+      const o2={'Pi\u00e8ce':r.nom,'Rep\u00e8re':p.rep,'Produit':kindLabel(p),'Quantit\u00e9':qte(p),'Variante':vNom(v,i)};
+      for(const sc of T[p.kind].s)for(const f of sc.f){
+        if(['act','eq','colbtn','info'].includes(f.t)||!visible(f,m))continue;
+        const vv=fmtVal(f,m[f.k]);if(!vv)continue;add(f.l);o2[f.l]=vv+(f.t==='mm'?' mm':'')}
+      data.push(o2)})}
   const esc2=v=>`"${String(v==null?'':v).replace(/"/g,'""')}"`;
   lignes.push(cols.map(esc2).join(';'));
   for(const o of data)lignes.push(cols.map(k=>esc2(o[k]||'')).join(';'));
@@ -1120,7 +1183,8 @@ function synthView(){
   <article class="rpt"><h1>Relevé de cotes</h1><div class="band"></div>
   <table><tr><td>Client</td><td><b>${esc(cl.nom)}</b></td></tr><tr><td>Chantier</td><td>${esc(c.adresse)}, ${esc(c.cp)} ${esc(c.ville)}</td></tr>${[c.batiment&&'Bât. '+c.batiment,c.etage&&'Étage '+c.etage,c.appart&&'N° '+c.appart,c.interphone&&'Interphone : '+c.interphone].filter(Boolean).length?`<tr><td>Accès</td><td>${esc([c.batiment&&'Bât. '+c.batiment,c.etage&&'Étage '+c.etage,c.appart&&'N° '+c.appart,c.interphone&&'Interphone : '+c.interphone].filter(Boolean).join(' · '))}</td></tr>`:''}${c.locNom||c.locTel||c.locMail||c.locNotes?`<tr><td>Personne sur place</td><td>${esc([c.locNom,c.locTel,c.locMail,c.locNotes].filter(Boolean).join(' · '))}</td></tr>`:''}${(Array.isArray(c.accesType)&&c.accesType.length)?`<tr><td>Accès au chantier</td><td>${esc(c.accesType.join(', '))}</td></tr>`:''}${c.support?`<tr><td>Nature du support</td><td>${esc(c.support)}</td></tr>`:''}${c.isolantNat?`<tr><td>Isolant intérieur</td><td>${esc(c.isolantNat)}${c.isolant?' · '+esc(c.isolant)+' mm':''}</td></tr>`:''}${c.depose?`<tr><td>Dépose et évacuation de l'ancien produit</td><td>${esc(c.depose)}</td></tr>`:''}${(Array.isArray(c.materiel)&&c.materiel.length)||c.materielAutre?`<tr><td>Matériel à prévoir</td><td>${esc([...(Array.isArray(c.materiel)?c.materiel:[]),c.materielAutre].filter(Boolean).join(', '))}</td></tr>`:''}<tr><td>Date de la visite</td><td>${fmtDate(c.date)}</td></tr>${c.par?`<tr><td>Relevé par</td><td>${esc(c.par)}</td></tr>`:''}</table>
   ${decRows||(c.dec.med||[]).length?`<h2>Découverte client</h2>${decRows}${c.dec.notes?`<p>${esc(c.dec.notes)}</p>`:''}${imgs(c.dec)}`:''}
-  ${c.pieces.map(r=>`<h2>${esc(r.nom)}</h2>${r.produits.length?r.produits.map(p=>`<div class="prodh"><h3>${esc(p.rep)} · ${qte(p)>1?qte(p)+' × ':''}${esc(kindLabel(p))}${p.d.materiau&&p.kind!=='autre'?' '+esc(p.d.materiau):''}</h3>${rows(T[p.kind].s,p.d)}${p.d.notes?`<p><b>Notes :</b> ${esc(p.d.notes)}</p>`:''}${(p.med||[]).some(i=>(p.mk||{})[i]==='audio')?`<p class="muted">${(p.med||[]).filter(i=>(p.mk||{})[i]==='audio').length} note(s) vocale(s) enregistrée(s) dans l'application.</p>`:''}${imgs(p)}</div>`).join(''):'<p class="muted">Aucun produit relevé.</p>'}`).join('')}
+  ${c.pieces.map(r=>`<h2>${esc(r.nom)}</h2>${r.produits.length?r.produits.map(p=>`<div class="prodh"><h3>${esc(p.rep)} · ${qte(p)>1?qte(p)+' × ':''}${esc(kindLabel(p))}${p.d.materiau&&p.kind!=='autre'?' '+esc(p.d.materiau):''}</h3>${rows(T[p.kind].s,p.d)}${p.d.notes?`<p><b>Notes :</b> ${esc(p.d.notes)}</p>`:''}${(p.med||[]).some(i=>(p.mk||{})[i]==='audio')?`<p class="muted">${(p.med||[]).filter(i=>(p.mk||{})[i]==='audio').length} note(s) vocale(s) enregistrée(s) dans l'application.</p>`:''}${imgs(p)}${vlist(p).length?'<p class="muted">Variantes demand\u00e9es par le client, \u00e0 chiffrer en option du produit ci-dessus. Cotes identiques.</p>':''}${vlist(p).map((v,i)=>{const df=varDiff(p,v);
+   return `<h3>${esc(vNom(v,i))}</h3>${df.length?`<table>${df.map(o=>`<tr><td>${esc(o.l)}</td><td>${esc(o.v||'\u2014')} <i>(au lieu de ${esc(o.b||'non renseign\u00e9')})</i></td></tr>`).join('')}</table>`:'<p class="muted">Aucune diff\u00e9rence not\u00e9e.</p>'}`}).join('')}</div>`).join(''):'<p class="muted">Aucun produit relev\u00e9.</p>'}`).join('')}
   </article>
   ${(()=>{const au=[];const add=(l,h)=>{for(const i of (h.med||[]))if((h.mk||{})[i]==='audio')au.push({l,id:i})};add('Découverte client',c.dec);for(const r of c.pieces)for(const p of r.produits)add(`${p.rep} · ${kindLabel(p)} (${r.nom})`,p);
     return au.length?`<section class="card noprint" style="margin-top:20px"><h2>Notes vocales</h2><p class="muted" style="margin:0 0 12px">À écouter ici. Elles ne figurent pas dans le PDF : elles restent dans l'application et dans la sauvegarde du chantier.</p>${au.map(a=>`<div style="margin-bottom:14px"><b>${esc(a.l)}</b><audio controls preload="none" data-mid="${a.id}" style="width:100%;display:block;margin:6px 0"></audio><button class="btn sm" data-act="shareaudio" data-id="${a.id}">Partager ce fichier audio</button></div>`).join('')}</section>`:''})()}
@@ -1237,8 +1301,8 @@ document.addEventListener('pointerup',ordEnd);document.addEventListener('pointer
 /* ---------- Rendu et événements ---------- */
 function render(keepScroll=true){
   const y=keepScroll?scrollY:0;
-  app.innerHTML=({home:homeView,new:newView,job:jobView,info:infoView,dec:decView,prod:prodView,synth:synthView,defs:defsView,cfg:cfgView}[V.name])();
-  hydrate();scrollTo(0,y);secSpy();storInfo();
+  app.innerHTML=({home:homeView,new:newView,job:jobView,info:infoView,dec:decView,prod:prodView,var:varView,synth:synthView,defs:defsView,cfg:cfgView}[V.name])();
+  hydrate();if(V.name==='var')markVar();scrollTo(0,y);secSpy();storInfo();
 }
 function go(v){kbHide();V=v;render(false)}
 function secSpy(){const ns=[...document.querySelectorAll('.secnav button')];if(!ns.length)return;
@@ -1247,6 +1311,7 @@ function secSpy(){const ns=[...document.querySelectorAll('.secnav button')];if(!
   ns.forEach((b,i)=>b.classList.toggle('on',i===cur))}
 let spyT=0;addEventListener('scroll',()=>{if(spyT)return;spyT=requestAnimationFrame(()=>{spyT=0;secSpy()})},{passive:true});
 const nextNum=(c,pre)=>1+Math.max(0,...c.pieces.flatMap(r=>r.produits).filter(p=>p.rep.replace(/\d+$/,'')===pre&&/\d+$/.test(p.rep)).map(p=>+p.rep.match(/\d+$/)[0]));
+const cloneVars=p=>vlist(p).map(v=>({id:uid(),nom:v.nom||'',d:JSON.parse(JSON.stringify(v.d||{}))}));
 function newProduct(r,kind,preset){
   const c=curCh(),tp=T[kind],pre=preset&&hasT(preset,'Porte-fenêtre')?'PF':tp.prefix;
   const n=nextNum(c,pre);
@@ -1275,6 +1340,8 @@ function demo(){
 document.addEventListener('input',e=>{const t=e.target;
   if(t.id==='q'||t.id==='pq'){const k=t.id;if(k==='q')V.q=t.value;else JV.q=t.value;
     const pos=t.selectionStart;render();const q=$('#'+k);if(q){q.focus();q.setSelectionRange(pos,pos)}return}
+  if(t.dataset&&t.dataset.vnom){const x=curVar();
+    if(x){x.v.nom=t.value;save();const s=$('#saved');if(s)s.textContent='Enregistrement\u2026'}return}
   if(!t.dataset||!t.dataset.k)return;
   const d=curData();let v=t.value;
   if(t.dataset.t==='mm'){const c=v.replace(/\D/g,'');if(c!==v)t.value=c;v=c;
@@ -1288,7 +1355,7 @@ document.addEventListener('input',e=>{const t=e.target;
    if(grp){const vals=grp.slice(0,3).map(x=>+d[x]).filter(n=>n>0);if(vals.length){d[grp[3]]=String(Math.min(...vals));const inp=app.querySelector(`input[data-k="${grp[3]}"]`);if(inp){inp.value=d[grp[3]];const sm=inp.closest('label').querySelector('.pl');if(sm)sm.textContent=(+d[grp[3]]<300||+d[grp[3]]>4500)?PLMSG:''}}}
    if(grp||k==='dg1'||k==='dg2'){const e=$('#eq');if(e)e.innerHTML=eqHTML(d)}}
   save();const s=$('#saved');if(s)s.textContent='Enregistrement…';
-  if(V.name==='prod'||V.name==='dec'||V.name==='defs'){const sib=app.querySelectorAll(`.chips [data-k="${t.dataset.k}"][data-act="chip"]`);sib.forEach(b=>b.classList.toggle('on',b.dataset.v===v))}
+  if(V.name==='prod'||V.name==='var'||V.name==='dec'||V.name==='defs'){const sib=app.querySelectorAll(`.chips [data-k="${t.dataset.k}"][data-act="chip"]`);sib.forEach(b=>b.classList.toggle('on',b.dataset.v===v))}
 });
 document.addEventListener('input',e=>{const t=e.target;if(!t.dataset||!t.dataset.cfg)return;
   if(t.dataset.cfg==='appareil')S.appareil=t.value.trim();else cfg()[t.dataset.cfg]=t.value.trim();
@@ -1325,6 +1392,15 @@ document.addEventListener('click',async e=>{
      if(k)newProduct(r,k.kind,k.pre);break}
    case 'prod':go({name:'prod',chId:V.chId,pid:id});break;
    case 'prodDone':go({name:'job',chId:V.chId});break;
+   case 'addvar':{const {p}=curProd();p.var=vlist(p);const v={id:uid(),nom:'',d:{}};p.var.push(v);save();
+     go({name:'var',chId:V.chId,pid:p.id,vid:v.id});toast(`Variante ${vLab(p.var.length-1)} cr\u00e9\u00e9e`);break}
+   case 'editvar':go({name:'var',chId:V.chId,pid:V.pid,vid:id});break;
+   case 'varreset':{const x=curVar();if(!x)break;delete x.v.d[b.dataset.k];save();render();toast(`Valeur de ${x.p.rep} reprise`);break}
+   case 'delvar':{const x=curVar();if(!x)break;
+     if(!await ask(`Supprimer la variante ${vLab(x.i)} ?\n\nLes diff\u00e9rences not\u00e9es seront perdues. ${x.p.rep} n'est pas modifi\u00e9.`,'Supprimer',true))break;
+     const pr=x.p,idx=x.i,old=x.v;pr.var=vlist(pr).filter(y=>y.id!==old.id);save();
+     go({name:'prod',chId:V.chId,pid:pr.id});
+     toastUndo(`Variante ${vLab(idx)} supprim\u00e9e`,()=>{pr.var=vlist(pr);pr.var.splice(idx,0,old);save();render()});break}
    case 'defs':go({name:'defs',chId:V.chId});break;
    case 'hint':S.noHint=true;save(true);render();break;
    case 'addassoc':{const {p,r}=curProd(),d=p.d,kind=b.dataset.kind,key=b.dataset.fk;
@@ -1340,13 +1416,13 @@ document.addEventListener('click',async e=>{
      const q=newProduct(r,isVR?'vr':'autre',pre);d[key]=q.rep;save();toast(`${q.rep} créé dans ${r.nom}`);break}
    case 'qte':{vib();const {p}=curProd();p.d.qte=Math.max(1,qte(p)+(+b.dataset.n));save();render();break}
    case 'dup':{const {p,r}=curProd(),pre=p.rep.replace(/\d+$/,'');const n=nextNum(c,pre);
-     const q={id:uid(),kind:p.kind,rep:pre+n,d:JSON.parse(JSON.stringify(p.d)),med:[],mk:{}};delete q.d.notes;delete q.d.qte;r.produits.splice(r.produits.indexOf(p)+1,0,q);save();toast(`Dupliqué en ${q.rep}`);go({name:'prod',chId:V.chId,pid:q.id});break}
+     const q={id:uid(),kind:p.kind,rep:pre+n,d:JSON.parse(JSON.stringify(p.d)),var:cloneVars(p),med:[],mk:{}};delete q.d.notes;delete q.d.qte;r.produits.splice(r.produits.indexOf(p)+1,0,q);save();toast(`Dupliqué en ${q.rep}`);go({name:'prod',chId:V.chId,pid:q.id});break}
    case 'moveprod':case 'dupto':{const {p,r}=curProd();
      const items=c.pieces.filter(x=>x!==r).map(x=>({l:x.nom,r:x}));items.push({l:'+ Nouvelle pièce',nw:1});
      const k=await choose(a==='moveprod'?`Déplacer ${p.rep} vers…`:`Dupliquer ${p.rep} dans…`,items);if(!k)break;
      let t=k.r;if(k.nw){const n=await askText('Nom de la pièce','',ROOMS.filter(x=>!c.pieces.some(y=>y.nom===x)));if(!n)break;t={id:uid(),nom:n,produits:[]};c.pieces.push(t)}
      if(a==='moveprod'){r.produits=r.produits.filter(x=>x!==p);t.produits.push(p);save();toast(`${p.rep} déplacé vers ${t.nom}`);render()}
-     else{const pre=p.rep.replace(/\d+$/,''),n=nextNum(c,pre),q={id:uid(),kind:p.kind,rep:pre+n,d:JSON.parse(JSON.stringify(p.d)),med:[],mk:{}};delete q.d.notes;delete q.d.qte;t.produits.push(q);save();toast(`Dupliqué en ${q.rep} dans ${t.nom}`);go({name:'prod',chId:V.chId,pid:q.id})}
+     else{const pre=p.rep.replace(/\d+$/,''),n=nextNum(c,pre),q={id:uid(),kind:p.kind,rep:pre+n,d:JSON.parse(JSON.stringify(p.d)),var:cloneVars(p),med:[],mk:{}};delete q.d.notes;delete q.d.qte;t.produits.push(q);save();toast(`Dupliqué en ${q.rep} dans ${t.nom}`);go({name:'prod',chId:V.chId,pid:q.id})}
      break}
    case 'editrep':{const {p}=curProd(),n=await askText('Repère du produit',p.rep);if(n){p.rep=n;save();render()}break}
    case 'delprod':{const {p,r}=curProd();if(await ask(`Supprimer ${p.rep} ?\n\nRécupérable pendant 24 heures.`,'Supprimer',true)){
