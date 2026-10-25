@@ -545,17 +545,124 @@ function defsView(){
   <section class="card">${DEFF.map(f=>fieldHTML(f,c.defs)).join('')}</section>
   <div class="sticky"><div><span class="saved" id="saved">Enregistré sur cette tablette</span><span class="sp"></span><button class="btn pri" data-act="job">Terminé</button></div></div>`;
 }
+/* ---------- PDF (sans bibliothèque, fonctionne hors ligne) ---------- */
+const CP1252={8364:128,8218:130,402:131,8222:132,8230:133,8224:134,8225:135,710:136,8240:137,352:138,8249:139,338:140,381:142,8216:145,8217:146,8220:147,8221:148,8226:149,8211:150,8212:151,732:152,8482:153,353:154,8250:155,339:156,382:158,376:159,8239:32};
+function pdfEnc(s){let o='';for(const ch of String(s)){let c=ch.codePointAt(0);if(c>=128){c=c===160?32:(CP1252[c]||(c<256?c:63))}
+  if(c===40||c===41||c===92)o+='\\'+String.fromCharCode(c);else if(c<32||c>126)o+='\\'+c.toString(8).padStart(3,'0');else o+=String.fromCharCode(c)}return o}
+let _mc;
+function tw(s,size,bold){if(_mc===undefined){try{_mc=document.createElement('canvas').getContext('2d')||null}catch(e){_mc=null}}
+  if(_mc){_mc.font=`${bold?'700 ':''}${size}px Helvetica, Arial, sans-serif`;return _mc.measureText(s).width}return String(s).length*size*(bold?.56:.52)}
+function wrapT(s,w,size,bold){const out=[];
+  for(const para of String(s).split('\n')){let line='';
+    for(let word of para.split(/\s+/).filter(Boolean)){
+      while(tw(word,size,bold)>w&&word.length>1){let k=word.length-1;while(k>1&&tw(word.slice(0,k),size,bold)>w)k--;if(line){out.push(line);line=''}out.push(word.slice(0,k));word=word.slice(k)}
+      const t=line?line+' '+word:word;if(tw(t,size,bold)<=w)line=t;else{if(line)out.push(line);line=word}}
+    out.push(line)}
+  return out.length?out:['']}
+function jpegInfo(data){try{if(!/^data:image\/jpe?g/i.test(data))return null;const b64=atob(data.split(',')[1]),n=b64.length,b=new Uint8Array(n);for(let i=0;i<n;i++)b[i]=b64.charCodeAt(i);
+  if(b[0]!==0xFF||b[1]!==0xD8)return null;let i=2;
+  while(i<n-9){if(b[i]!==0xFF){i++;continue}const m=b[i+1];if(m===0xFF){i++;continue}
+    if(m>=0xC0&&m<=0xCF&&m!==0xC4&&m!==0xC8&&m!==0xCC){const h=b[i+5]<<8|b[i+6],w=b[i+7]<<8|b[i+8],k=b[i+9];return {bytes:b,w,h,cs:k===1?'DeviceGray':k===4?'DeviceCMYK':'DeviceRGB'}}
+    i+=2+(b[i+2]<<8|b[i+3])}}catch(e){}return null}
+function synthModel(c){
+  const cl=clById(c.clientId)||{nom:''},it=[];
+  const nonAudio=h=>(h.med||[]).filter(i=>(h.mk||{})[i]!=='audio');
+  const rowsOf=(secs,d)=>{for(const s of secs){const r=s.f.filter(f=>visible(f,d)&&!['act','eq','colbtn','info'].includes(f.t)).map(f=>{const v=fmtVal(f,d[f.k]);return [f.l,v&&f.t==='mm'?v+' mm':v]}).filter(x=>x[1]);if(r.length){it.push({t:'h3',x:s.t});it.push({t:'rows',r})}}};
+  const acc=[c.batiment&&'Bât. '+c.batiment,c.etage&&'Étage '+c.etage,c.appart&&'N° '+c.appart,c.interphone&&'Interphone : '+c.interphone].filter(Boolean);
+  const head=[['Client',cl.nom],['Chantier',`${c.adresse}, ${c.cp} ${c.ville}`]];
+  if(acc.length)head.push(['Accès',acc.join(' · ')]);
+  if(c.locNom||c.locTel||c.locMail||c.locNotes)head.push(['Personne sur place',[c.locNom,c.locTel,c.locMail,c.locNotes].filter(Boolean).join(' · ')]);
+  if(Array.isArray(c.accesType)&&c.accesType.length)head.push(['Accès au chantier',c.accesType.join(', ')]);
+  if(c.support)head.push(['Nature du support',c.support]);
+  if(c.isolantNat)head.push(['Isolant intérieur',c.isolantNat+(c.isolant?' · '+c.isolant+' mm':'')]);
+  if(c.depose)head.push(["Dépose et évacuation de l'ancien produit",c.depose]);
+  if((Array.isArray(c.materiel)&&c.materiel.length)||c.materielAutre)head.push(['Matériel à prévoir',[...(Array.isArray(c.materiel)?c.materiel:[]),c.materielAutre].filter(Boolean).join(', ')]);
+  head.push(['Date de la visite',fmtDate(c.date)]);if(c.par)head.push(['Relevé par',c.par]);
+  it.push({t:'rows',r:head});
+  const dr=it.length;rowsOf([DEC],c.dec);
+  const di=nonAudio(c.dec);
+  if(it.length>dr||di.length||c.dec.notes){it.splice(dr,0,{t:'h2',x:'Découverte client'});if(c.dec.notes)it.push({t:'p',x:c.dec.notes});if(di.length)it.push({t:'imgs',ids:di})}
+  for(const r of c.pieces){it.push({t:'h2',x:r.nom});
+    if(!r.produits.length){it.push({t:'p',x:'Aucun produit relevé.',muted:1});continue}
+    for(const p of r.produits){it.push({t:'prodh',x:`${p.rep} · ${qte(p)>1?qte(p)+' × ':''}${kindLabel(p)}${p.d.materiau&&p.kind!=='autre'?' '+p.d.materiau:''}`});
+      rowsOf(T[p.kind].s,p.d);
+      if(p.d.notes)it.push({t:'p',x:'Notes : '+p.d.notes});
+      const na=(p.med||[]).filter(i=>(p.mk||{})[i]==='audio').length;
+      if(na)it.push({t:'p',x:`${na} note(s) vocale(s) enregistrée(s) dans l'application.`,muted:1});
+      const im=nonAudio(p);if(im.length)it.push({t:'imgs',ids:im})}}
+  return it}
+async function buildSynthPDF(c){
+  const cl=clById(c.clientId)||{nom:''},m=synthModel(c);
+  const ids=[...new Set(m.flatMap(x=>x.t==='imgs'?x.ids:[]))],idx={},list=[];
+  for(const id of ids){const md=await getMedia(id);const im=md&&md.data?jpegInfo(md.data):null;if(im){idx[id]=list.length;list.push(im)}}
+  const PW=595.28,PH=841.89,M=42,CW=PW-2*M,BOT=52,BLUE=[.176,.239,.455],ROSE=[.941,.4,.569],INK=[.1,.1,.16],GREY=[.38,.4,.48],HAIR=[.85,.86,.9];
+  const pages=[];let ops,used,y;
+  const f2=n=>(+n).toFixed(2);
+  const np=()=>{ops=[];used=new Set();pages.push({ops,used});y=PH-M};
+  const txt=(s,x,yy,size,bold,col)=>ops.push(`BT /F${bold?2:1} ${size} Tf ${col.join(' ')} rg ${f2(x)} ${f2(yy)} Td (${pdfEnc(s)}) Tj ET`);
+  const rect=(x,yy,w,h,col)=>ops.push(`${col.join(' ')} rg ${f2(x)} ${f2(yy)} ${f2(w)} ${f2(h)} re f`);
+  const ln=(x1,y1,x2,y2,col,wd)=>ops.push(`${col.join(' ')} RG ${wd} w ${f2(x1)} ${f2(y1)} m ${f2(x2)} ${f2(y2)} l S`);
+  const need=h=>{if(y-h<BOT)np()};
+  np();
+  rect(0,PH-70,PW,70,BLUE);rect(0,PH-74,PW,4,ROSE);
+  txt('Relevé de cotes',M,PH-44,22,true,[1,1,1]);
+  const brand='Fermapro';txt(brand,PW-M-tw(brand,12,true),PH-42,12,true,[1,1,1]);
+  y=PH-74-26;
+  for(const x of m){
+    if(x.t==='h2'){need(120);y-=10;txt(x.x,M,y-14,14,true,BLUE);ln(M,y-20,PW-M,y-20,ROSE,1.2);y-=32}
+    else if(x.t==='prodh'){need(110);y-=6;rect(M,y-20,CW,22,[.93,.94,.97]);rect(M,y-20,3,22,ROSE);txt(x.x,M+10,y-14,11.5,true,BLUE);y-=32}
+    else if(x.t==='h3'){need(40);txt(String(x.x).toUpperCase(),M,y-10,8.5,true,ROSE);y-=18}
+    else if(x.t==='rows'){const LW=175;
+      for(const [l,v] of x.r){const a=wrapT(l,LW-8,9.5,false),b=wrapT(v,CW-LW-6,10,true),n=Math.max(a.length,b.length),h=n*13+6;need(h);
+        a.forEach((t,i)=>txt(t,M,y-11-i*13,9.5,false,GREY));b.forEach((t,i)=>txt(t,M+LW,y-11-i*13,10,true,INK));
+        y-=h;ln(M,y+1,PW-M,y+1,HAIR,.5)}
+      y-=8}
+    else if(x.t==='p'){const a=wrapT(x.x,CW,10,false);for(const t of a){need(14);txt(t,M,y-11,10,false,x.muted?GREY:INK);y-=13}y-=6}
+    else if(x.t==='imgs'){const G=8,cols=3,cw=(CW-G*(cols-1))/cols,MAXH=150,arr=x.ids.filter(i=>idx[i]!==undefined);
+      for(let i=0;i<arr.length;i+=cols){const row=arr.slice(i,i+cols).map(id=>{const im=list[idx[id]],s=Math.min(cw/im.w,MAXH/im.h);return {n:idx[id],w:im.w*s,h:im.h*s}}),rh=Math.max(...row.map(r=>r.h));
+        need(rh+10);row.forEach((r,k)=>{used.add(r.n);ops.push(`q ${f2(r.w)} 0 0 ${f2(r.h)} ${f2(M+k*(cw+G))} ${f2(y-r.h)} cm /Im${r.n} Do Q`)});y-=rh+G}
+      y-=6}
+  }
+  const N=pages.length,foot=`Fermapro · Relevé de cotes · ${cl.nom}`;
+  pages.forEach((pg,k)=>{ops=pg.ops;ln(M,38,PW-M,38,HAIR,.5);txt(foot,M,26,8,false,GREY);const t=`Page ${k+1} / ${N}`;txt(t,PW-M-tw(t,8,false),26,8,false,GREY)});
+  return assemblePDF(pages,list)}
+function assemblePDF(pages,imgs){
+  const parts=[],offs=[];let len=0;
+  const S=s=>{const u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i)&255;return u};
+  const P=u=>{parts.push(u);len+=u.length};
+  const nI=imgs.length,nP=pages.length,pageObj=k=>5+nI+2*k,contObj=k=>6+nI+2*k,total=4+nI+2*nP;
+  const begin=n=>{offs[n]=len;P(S(n+' 0 obj\n'))},end=()=>P(S('\nendobj\n'));
+  P(S('%PDF-1.4\n'));
+  begin(1);P(S('<</Type/Catalog/Pages 2 0 R>>'));end();
+  begin(2);P(S('<</Type/Pages/Kids['+pages.map((_,k)=>pageObj(k)+' 0 R').join(' ')+']/Count '+nP+'>>'));end();
+  begin(3);P(S('<</Type/Font/Subtype/Type1/BaseFont/Helvetica/Encoding/WinAnsiEncoding>>'));end();
+  begin(4);P(S('<</Type/Font/Subtype/Type1/BaseFont/Helvetica-Bold/Encoding/WinAnsiEncoding>>'));end();
+  imgs.forEach((im,i)=>{begin(5+i);P(S(`<</Type/XObject/Subtype/Image/Width ${im.w}/Height ${im.h}/ColorSpace/${im.cs}/BitsPerComponent 8/Filter/DCTDecode${im.cs==='DeviceCMYK'?'/Decode[1 0 1 0 1 0 1 0]':''}/Length ${im.bytes.length}>>\nstream\n`));P(im.bytes);P(S('\nendstream'));end()});
+  const res='/Resources<</Font<</F1 3 0 R/F2 4 0 R>>'+(nI?'/XObject<<'+imgs.map((_,i)=>'/Im'+i+' '+(5+i)+' 0 R').join('')+'>>':'')+'>>';
+  pages.forEach((pg,k)=>{begin(pageObj(k));P(S(`<</Type/Page/Parent 2 0 R/MediaBox[0 0 595.28 841.89]${res}/Contents ${contObj(k)} 0 R>>`));end();
+    const cs=S(pg.ops.join('\n'));begin(contObj(k));P(S(`<</Length ${cs.length}>>\nstream\n`));P(cs);P(S('\nendstream'));end()});
+  const xr=len;let x='xref\n0 '+(total+1)+'\n0000000000 65535 f \n';for(let n=1;n<=total;n++)x+=String(offs[n]).padStart(10,'0')+' 00000 n \n';
+  x+=`trailer\n<</Size ${total+1}/Root 1 0 R>>\nstartxref\n${xr}\n%%EOF`;P(S(x));
+  const out=new Uint8Array(len);let o=0;for(const u of parts){out.set(u,o);o+=u.length}return out}
+const dataToBlob=d=>{const [h,b]=d.split(','),mime=(h.match(/:(.*?)[;,]/)||[])[1]||'application/octet-stream',bin=atob(b),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u],{type:mime})};
+async function shareOrSave(blob,name,mime){
+  try{const file=new File([blob],name,{type:mime});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name});return}}catch(e){if(e&&e.name==='AbortError')return}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();toast('Fichier généré : enregistrez-le depuis les téléchargements')}
+const slug=s=>(s||'client').replace(/[^\w]+/g,'-');
 function synthView(){
   const c=curCh(),cl=clById(c.clientId)||{nom:''};
   const imgs=h=>{const ids=(h.med||[]).filter(i=>(h.mk||{})[i]!=='audio');return ids.length?`<div class="imgs">${ids.map(i=>`<img data-mid="${i}" alt="">`).join('')}</div>`:''};
   const rows=(secs,d)=>secs.map(s=>{const r=s.f.filter(f=>visible(f,d)&&!['act','eq','colbtn','info'].includes(f.t)).map(f=>({f,v:fmtVal(f,d[f.k])})).filter(x=>x.v);return r.length?`<h3>${esc(s.t)}</h3><table>${r.map(x=>`<tr><td>${esc(x.f.l)}</td><td class="${x.f.t==='mm'?'mmv':''}">${esc(x.v)}${x.f.t==='mm'?' mm':''}</td></tr>`).join('')}</table>`:''}).join('');
   const decRows=rows([DEC],c.dec);
-  return `<div class="top noprint"><button class="back" data-act="job">‹ Chantier</button><span class="sp"></span><button class="btn pri" data-act="print">Imprimer ou enregistrer en PDF</button></div>
+  return `<div class="top noprint"><button class="back" data-act="job">‹ Chantier</button><span class="sp"></span><button class="btn pri" data-act="pdf">Enregistrer le PDF</button><button class="btn" data-act="print">Imprimer</button></div>
   <article class="rpt"><h1>Relevé de cotes</h1><div class="band"></div>
   <table><tr><td>Client</td><td><b>${esc(cl.nom)}</b></td></tr><tr><td>Chantier</td><td>${esc(c.adresse)}, ${esc(c.cp)} ${esc(c.ville)}</td></tr>${[c.batiment&&'Bât. '+c.batiment,c.etage&&'Étage '+c.etage,c.appart&&'N° '+c.appart,c.interphone&&'Interphone : '+c.interphone].filter(Boolean).length?`<tr><td>Accès</td><td>${esc([c.batiment&&'Bât. '+c.batiment,c.etage&&'Étage '+c.etage,c.appart&&'N° '+c.appart,c.interphone&&'Interphone : '+c.interphone].filter(Boolean).join(' · '))}</td></tr>`:''}${c.locNom||c.locTel||c.locMail||c.locNotes?`<tr><td>Personne sur place</td><td>${esc([c.locNom,c.locTel,c.locMail,c.locNotes].filter(Boolean).join(' · '))}</td></tr>`:''}${(Array.isArray(c.accesType)&&c.accesType.length)?`<tr><td>Accès au chantier</td><td>${esc(c.accesType.join(', '))}</td></tr>`:''}${c.support?`<tr><td>Nature du support</td><td>${esc(c.support)}</td></tr>`:''}${c.isolantNat?`<tr><td>Isolant intérieur</td><td>${esc(c.isolantNat)}${c.isolant?' · '+esc(c.isolant)+' mm':''}</td></tr>`:''}${c.depose?`<tr><td>Dépose et évacuation de l'ancien produit</td><td>${esc(c.depose)}</td></tr>`:''}${(Array.isArray(c.materiel)&&c.materiel.length)||c.materielAutre?`<tr><td>Matériel à prévoir</td><td>${esc([...(Array.isArray(c.materiel)?c.materiel:[]),c.materielAutre].filter(Boolean).join(', '))}</td></tr>`:''}<tr><td>Date de la visite</td><td>${fmtDate(c.date)}</td></tr>${c.par?`<tr><td>Relevé par</td><td>${esc(c.par)}</td></tr>`:''}</table>
   ${decRows||(c.dec.med||[]).length?`<h2>Découverte client</h2>${decRows}${c.dec.notes?`<p>${esc(c.dec.notes)}</p>`:''}${imgs(c.dec)}`:''}
-  ${c.pieces.map(r=>`<h2>${esc(r.nom)}</h2>${r.produits.length?r.produits.map(p=>`<div class="prodh"><h3>${esc(p.rep)} · ${qte(p)>1?qte(p)+' × ':''}${esc(kindLabel(p))}${p.d.materiau&&p.kind!=='autre'?' '+esc(p.d.materiau):''}</h3>${rows(T[p.kind].s,p.d)}${p.d.notes?`<p><b>Notes :</b> ${esc(p.d.notes)}</p>`:''}${(p.med||[]).some(i=>(p.mk||{})[i]==='audio')?`<p class="muted">${(p.med||[]).filter(i=>(p.mk||{})[i]==='audio').length} note(s) vocale(s) enregistrée(s) sur la tablette.</p>`:''}${imgs(p)}</div>`).join(''):'<p class="muted">Aucun produit relevé.</p>'}`).join('')}
-  </article>`;
+  ${c.pieces.map(r=>`<h2>${esc(r.nom)}</h2>${r.produits.length?r.produits.map(p=>`<div class="prodh"><h3>${esc(p.rep)} · ${qte(p)>1?qte(p)+' × ':''}${esc(kindLabel(p))}${p.d.materiau&&p.kind!=='autre'?' '+esc(p.d.materiau):''}</h3>${rows(T[p.kind].s,p.d)}${p.d.notes?`<p><b>Notes :</b> ${esc(p.d.notes)}</p>`:''}${(p.med||[]).some(i=>(p.mk||{})[i]==='audio')?`<p class="muted">${(p.med||[]).filter(i=>(p.mk||{})[i]==='audio').length} note(s) vocale(s) enregistrée(s) dans l'application.</p>`:''}${imgs(p)}</div>`).join(''):'<p class="muted">Aucun produit relevé.</p>'}`).join('')}
+  </article>
+  ${(()=>{const au=[];const add=(l,h)=>{for(const i of (h.med||[]))if((h.mk||{})[i]==='audio')au.push({l,id:i})};add('Découverte client',c.dec);for(const r of c.pieces)for(const p of r.produits)add(`${p.rep} · ${kindLabel(p)} (${r.nom})`,p);
+    return au.length?`<section class="card noprint" style="margin-top:20px"><h2>Notes vocales</h2><p class="muted" style="margin:0 0 12px">À écouter ici. Elles ne figurent pas dans le PDF : elles restent dans l'application et dans la sauvegarde du chantier.</p>${au.map(a=>`<div style="margin-bottom:14px"><b>${esc(a.l)}</b><audio controls preload="none" data-mid="${a.id}" style="width:100%;display:block;margin:6px 0"></audio><button class="btn sm" data-act="shareaudio" data-id="${a.id}">Partager ce fichier audio</button></div>`).join('')}</section>`:''})()}
+  <div style="height:90px" class="noprint"></div>`;
 }
 
 /* ---------- Rendu et événements ---------- */
@@ -667,6 +774,8 @@ document.addEventListener('click',async e=>{
    case 'annot':{const m=await getMedia(id);if(m)openSketch(curHolder(),null,m.data);break}
    case 'delmedia':if(await ask('Supprimer ce média ?','Supprimer',true))delMedia(curHolder(),id);break;
    case 'synth':go({name:'synth',chId:V.chId});break;
+   case 'pdf':{toast('Création du PDF…');try{const bytes=await buildSynthPDF(c),cl=clById(c.clientId);await shareOrSave(new Blob([bytes],{type:'application/pdf'}),`releve-${slug(cl&&cl.nom)}-${c.date}.pdf`,'application/pdf')}catch(e){toast('Le PDF n\'a pas pu être créé')}break}
+   case 'shareaudio':{const m=await getMedia(id);if(!m)break;const bl=dataToBlob(m.data),t=bl.type||'',ext=/mp4|m4a|aac/.test(t)?'m4a':/mpeg|mp3/.test(t)?'mp3':/webm/.test(t)?'webm':/ogg/.test(t)?'ogg':/wav/.test(t)?'wav':'audio';await shareOrSave(bl,`note-vocale-${slug(clById(c.clientId)&&clById(c.clientId).nom)}-${id.slice(0,6)}.${ext}`,t||'audio/mp4');break}
    case 'print':try{window.print()}catch(e){toast("Impression indisponible dans cet aperçu")}break;
    case 'close':{const m=allMissing(c);if(m.length&&!await ask(`Des champs obligatoires sont vides :\n${m.join('\n')}\n\nClôturer quand même ?`,'Clôturer'))break;c.statut='clos';save();render();if(unsaved(c)&&c.pieces.some(r=>r.produits.length)&&await ask('Chantier clôturé. Envoyer ou sauvegarder le relevé maintenant ?','Sauvegarder'))await exportJob(c);break}
    case 'reopen':c.statut='ouvert';save();render();break;
