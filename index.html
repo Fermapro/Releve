@@ -246,8 +246,9 @@ const poseWith=(...x)=>({t:'Pose',f:[...POSE.f.slice(0,1),...x,...POSE.f.slice(1
 const STRUCT=[{k:'support',l:'Nature du support (structure)',o:['Béton','Brique','Parpaing','Pierre','Ossature bois']},
   {k:'isolantNat',l:"Nature de l'isolant intérieur",o:['Placo','Briques','Plâtre']},
   {k:'isolant',l:"Épaisseur de l'isolant intérieur",t:'mm',if:d=>d.isolantNat}];
-const MODE={k:'modeCote',l:'Mode de cote',o:['Tableau','Fabrication'],req:1,seg:1};
-const MODE_FEN=Object.assign({},MODE,{o:['Tableau','Fabrication','Passage rénovation','Passage semi-rénovation']});
+const MODES=['Tableau','Dormant','Hors-tout','Fabrication'];
+const MODE={k:'modeCote',l:'Mode de cote',o:MODES,req:1,seg:1};
+const MODE_FEN=Object.assign({},MODE,{o:[...MODES,'Passage rénovation','Passage semi-rénovation']});
 const SENSF={k:'sens',l:"Sens d'ouverture (vu de l'intérieur)",o:['Droite','Gauche']};
 const PTIR={k:'ptir',l:'Poussant ou tirant (vu de l\'intérieur)',o:['Tirant','Poussant']};
 const volet=(label,prefix,types)=>({label,prefix,s:[
@@ -400,6 +401,17 @@ const T={
     {k:'lie',l:'Associé à (repère)',t:'line',if:d=>d.lie},
     {k:'desc',l:'Description et choix du client',t:'text'}]},POSE]}
 };
+/* Prise de cotes : un commentaire sous la zone de cotes de chaque produit, et pour les fenêtres,
+   portes-fenêtres et portes d'entrée une 2e prise de cotes (type de cote au choix, saisie à nouveau),
+   par exemple tableau puis hors-tout, ou cote rénovation puis hors-tout. Aucune conversion automatique
+   entre les deux : chaque valeur est celle qui a été relevée. */
+const COM_COTES={k:'comCotes',l:'Commentaire sur les cotes',t:'text'};
+const COTES2=(mode)=>({t:'Cotes (2e prise)',f:[Object.assign({},mode,{k:'modeCote2',l:'Mode de cote (2e prise)',req:0}),
+  Object.assign({},HH('Hauteur (2e prise)'),{k:'hauteur2',req:0}),Object.assign({},LL('Largeur (2e prise)'),{k:'largeur2',req:0}),COM_COTES]});
+for(const k in T){const ss=T[k].s,ic=ss.findIndex(x=>x.t==='Cotes');if(ic<0)continue;
+  if(k==='fenetre'||k==='porte'){const ip=ss.indexOf(PTS3);ss.splice((ip>=0?ip:ic)+1,0,COTES2(k==='fenetre'?MODE_FEN:MODE))}
+  else ss[ic].f.push(COM_COTES)}
+
 /* 2.2 et 2.3 : Configuration + Options deviennent « Produit », Pose + Points de contrôle
    deviennent « Pose et contrôles ». Les champs ne changent ni de clé ni d'ordre interne. */
 function fuse(t,a,b,titre){const s=t.s,ia=s.findIndex(x=>x.t===a),ib=s.findIndex(x=>x.t===b);
@@ -470,6 +482,8 @@ function xwarns(c,p){const o=[],d=p.d;if(!c)return o;
   if(d.lie){const q=c.pieces.flatMap(r=>r.produits).find(x=>x.rep===d.lie);
     if(q)for(const [k,l] of [['hauteur','hauteur'],['largeur','largeur']]){const a=+d[k],b=+q.d[k];
       if(a>0&&b>0&&Math.abs(a-b)>50)o.push(`${l} ${a} mm contre ${b} mm sur ${q.rep}`)}}
+  if((d.hauteur2||d.largeur2)&&!d.modeCote2)o.push('mode de cote manquant pour la 2e prise');
+  if(d.modeCote2&&d.modeCote2===d.modeCote)o.push(`2e prise de cotes dans le même mode que la 1re (${d.modeCote})`);
   if(p.kind==='fenetre'&&hasT(d,'Porte-fenêtre')&&d.allege)o.push(`allège ${d.allege} mm saisie sur une porte-fenêtre`);
   if(p.kind==='vr'&&d.ctab){const L=+d.largeur,T=+d.tabL,H=+d.hauteur,TH=+d.tabH;
     if(L>0&&T>0&&L>T)o.push(`largeur fabrication ${L} mm supérieure au tableau ${T} mm`);
@@ -580,7 +594,7 @@ function sectionHTML(s,d,showMiss,id){
 }
 
 /* ---------- Médias ---------- */
-const secShort=t=>({'Pose et contrôles':'Pose','Relevé en 3 points':'3 points','Cotes de tableau (contrôle)':'Tableau','Photos, notes vocales, croquis':'Photos'}[t]||t);
+const secShort=t=>({'Pose et contrôles':'Pose','Relevé en 3 points':'3 points','Cotes (2e prise)':'2e prise','Cotes de tableau (contrôle)':'Tableau','Photos, notes vocales, croquis':'Photos'}[t]||t);
 function mediaHTML(h,id){
   const ids=h.med||[];
   const th=ids.map(id=>{const k=(h.mk||{})[id]||'photo';
@@ -1457,7 +1471,7 @@ document.addEventListener('click',async e=>{
    case 'exportall':exportAll();break;
    case 'restaurer':restaurer(id);break;
    case 'copycotes':{const {p}=curProd(),q=c.pieces.flatMap(r=>r.produits).find(x=>x.id===id);
-     if(!q)break;for(const k of ['modeCote','hauteur','largeur','prof'])if(q.d[k]&&!p.d[k])p.d[k]=q.d[k];
+     if(!q)break;for(const k of ['modeCote','hauteur','largeur','prof','modeCote2','hauteur2','largeur2'])if(q.d[k]&&!p.d[k])p.d[k]=q.d[k];
      save();render();toast(`Cotes de ${q.rep} reprises`);break}
    case 'cfg':go({name:'cfg'});break;
    case 'setdate':{NF.date=dayShift(+b.dataset.v);render();break}
